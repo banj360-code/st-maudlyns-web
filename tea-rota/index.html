@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Maudlyns Tea Rota & Biscuit Poll</title>
+    <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #f4e4bc; color: #2c241b; font-family: 'Old Standard TT', serif; text-align: center; padding: 20px; }
+        
+        /* The Vicar's Portrait */
+        .portrait {
+            width: 100%;
+            max-width: 400px;
+            border: 8px solid #2c241b;
+            border-radius: 4px;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 2.2em; margin-bottom: 10px; border-bottom: 2px solid #2c241b; display: inline-block; }
+        h2 { font-size: 1.5em; margin-top: 40px; color: #8b0000; text-decoration: underline; }
+
+        /* The Rota Table */
+        .schedule { margin: 20px auto; max-width: 400px; text-align: left; background: #fff; padding: 20px; border: 1px solid #2c241b; box-shadow: 5px 5px 0px rgba(0,0,0,0.1); }
+        .entry { border-bottom: 1px dashed #999; padding: 10px 0; display: flex; justify-content: space-between; }
+        .entry:last-child { border-bottom: none; }
+        .date { font-weight: bold; color: #8b0000; }
+        .name { font-style: italic; }
+
+        /* The Biscuit Survey */
+        .survey-box { margin: 20px auto; max-width: 400px; text-align: left; }
+        .biscuit-option { 
+            background: #e8dcc5; border: 1px solid #2c241b; padding: 15px; margin-bottom: 10px; 
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .biscuit-option:hover { background: #fff; }
+        .biscuit-name { font-weight: bold; font-size: 1.1em; }
+        .vote-btn { 
+            background: #8b0000; color: #fff; border: none; padding: 5px 15px; 
+            font-family: 'Old Standard TT', serif; font-size: 0.9em; cursor: pointer;
+        }
+
+        .note { margin-top: 30px; font-size: 0.9em; color: #555; font-style: italic; }
+        a { display: block; margin-top: 30px; color: #8b0000; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <img src="../images/vicar-tea.jpg" alt="The Vicar enjoying a quiet moment" class="portrait">
+
+    <h1>The Tea Rota</h1>
+    <p>Please ensure the urn is descaled. The Vicar is watching.</p>
+
+    <div class="schedule">
+        <div class="entry"><span class="date">Feb 4</span><span class="name">Mrs. Higgins</span></div>
+        <div class="entry"><span class="date">Feb 11</span><span class="name">Major Clapperton</span></div>
+        <div class="entry"><span class="date">Feb 18</span><span class="name">The Vicar (Expect burnt toast)</span></div>
+        <div class="entry"><span class="date">Feb 25</span><span class="name">Miss Pringle</span></div>
+    </div>
+
+    <h2>The Great Biscuit Survey</h2>
+    <p>Cast your vote. The Vestry reserves the right to ignore it.</p>
+
+    <div class="survey-box">
+        <div class="biscuit-option" onclick="alert('The Vicar nods in approval. A sturdy, reliable biscuit.')">
+            <span class="biscuit-name">Digestives (Plain)</span>
+            <button class="vote-btn">Vote</button>
+        </div>
+        <div class="biscuit-option" onclick="alert('An extravagant choice. The Vicar suspects you have hidden wealth.')">
+            <span class="biscuit-name">Chocolate Hobnobs</span>
+            <button class="vote-btn">Vote</button>
+        </div>
+        <div class="biscuit-option" onclick="alert('Regrettably bland. The Vicar suggests you pray for better taste.')">
+            <span class="biscuit-name">Rich Tea</span>
+            <button class="vote-btn">Vote</button>
+        </div>
+        <div class="biscuit-option" onclick="alert('Denied. The crumbs get in the cassock.')">
+            <span class="biscuit-name">Custard Creams</span>
+            <button class="vote-btn">Vote</button>
+        </div>
+    </div>
+
+    <p class="note">* Note: Voting closes when the tin is empty.</p>
+
+    <a href="/">← Return to the Lychgate</a>
+
+</body>
+</html>
