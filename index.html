@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Maudlyns-le-Wold Ledger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #1a0f0d;
+            font-family: 'Old Standard TT', serif;
+            overflow: hidden;
+        }
+
+        /* The Hero Image */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/church-image.png') no-repeat center center;
+            background-size: cover;
+            z-index: 1;
+        }
+
+        /* Vignette for depth */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.6) 100%);
+            z-index: 2;
+        }
+
+        header {
+            position: absolute;
+            top: 40px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        h1 {
+            color: #fdfaf0;
+            font-variant: small-caps;
+            font-size: 3rem;
+            letter-spacing: 4px;
+            text-shadow: 3px 3px 15px rgba(0,0,0,0.9);
+            margin: 0;
+        }
+
+        /* The Organ Console Navigation */
+        .stops-menu {
+            position: absolute;
+            left: 40px;
+            top: 55%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            z-index: 10;
+        }
+
+        .organ-stop {
+            width: 85px;
+            height: 85px;
+            background: radial-gradient(circle, #fdfaf0 0%, #d8d0ba 100%);
+            border-radius: 50%;
+            border: 4px solid #2a1f1d;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #1a0f0d;
+            font-weight: bold;
+            font-size: 0.7rem;
+            text-align: center;
+            text-transform: uppercase;
+            box-shadow: 0 8px 0 #000, 0 12px 20px rgba(0,0,0,0.5);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .organ-stop:hover {
+            transform: translateX(8px);
+            background: radial-gradient(circle, #ffffff 0%, #e8e2d6 100%);
+        }
+
+        .organ-stop:active {
+            transform: translateY(6px) translateX(4px);
+            box-shadow: 0 2px 0 #000, 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .stop-vox {
+            color: #8b0000;
+            border-color: #4a0000;
+            animation: pulse-glow 3s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 8px 0 #000, 0 12px 20px rgba(0,0,0,0.5); }
+            50% { box-shadow: 0 8px 0 #000, 0 12px 30px rgba(139,0,0,0.4); }
+            100% { box-shadow: 0 8px 0 #000, 0 12px 20px rgba(0,0,0,0.5); }
+        }
+
+        .stop-label { line-height: 1.2; }
+        .stop-pitch { display: block; font-size: 0.6rem; opacity: 0.7; margin-top: 2px; }
+
+        @media (max-width: 600px) {
+            .stops-menu { left: 20px; }
+            .organ-stop { width: 70px; height: 70px; font-size: 0.6rem; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <header>
+        <h1>St. Maudlyns-le-Wold</h1>
+    </header>
+
+    <nav class="stops-menu">
+        <a href="/sermons/" class="organ-stop">
+            <span class="stop-label">Sermons</span>
+            <span class="stop-pitch">8'</span>
+        </a>
+
+        <a href="/gazette/" class="organ-stop">
+            <span class="stop-label">Gazette</span>
+            <span class="stop-pitch">4'</span>
+        </a>
+
+        <a href="/prayers/" class="organ-stop">
+            <span class="stop-label">Petitions</span>
+            <span class="stop-pitch">16'</span>
+        </a>
+
+        <a href="/vox/" class="organ-stop stop-vox">
+            <span class="stop-label">Confess</span>
+            <span class="stop-pitch">VOX</span>
+        </a>
+
+        <a href="/tea-rota/" class="organ-stop">
+            <span class="stop-label">Tea Rota</span>
+            <span class="stop-pitch">II</span>
+        </a>
+    </nav>
+
+</body>
+</html>
