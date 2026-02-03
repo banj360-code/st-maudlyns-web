@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Parish Gazette</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f1ea; /* Newsprint */
+            color: #1a0f0d;
+            font-family: 'Old Standard TT', serif;
+            padding: 20px; /* Reduced padding for mobile */
+            text-align: center;
+            margin: 0;
+        }
+        .sheet {
+            max-width: 600px;
+            margin: 0 auto;
+            border: 4px double #1a0f0d;
+            padding: 40px;
+            background: #fff;
+            box-sizing: border-box; /* Keeps padding inside the width */
+            overflow: hidden; /* Prevents spillover */
+        }
+        
+        h1 { 
+            font-family: 'Cinzel', serif; 
+            font-size: 2.5rem; 
+            border-bottom: 2px solid #000; 
+            margin-bottom: 10px; 
+            line-height: 1.2;
+            word-wrap: break-word; /* Prevents long words breaking layout */
+        }
+
+        .date { font-style: italic; border-bottom: 1px solid #000; display: block; padding-bottom: 20px; margin-bottom: 30px; }
+        input { padding: 10px; width: 70%; border: 1px solid #000; margin-bottom: 10px; }
+        button { padding: 10px 20px; background: #000; color: #fff; border: none; cursor: pointer; }
+        button:hover { background: #8b0000; }
+
+        /* --- MOBILE FIX --- */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; } /* Shrinks title on phone */
+            .sheet { padding: 20px; } /* Gives more room for text */
+            input { width: 100%; box-sizing: border-box; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sheet">
+        <h1>The Maudlyn Gazette</h1>
+        <span class="date">Published Irregularly • Price: One Penny (or email)</span>
+        
+        <p><strong>NOTICE:</strong> The Vicar is currently compiling a list of "Banned Algorithms." Subscribe to receive the full Index, along with recipes for damp cake and warnings about the approaching modernity.</p>
+        
+        <form name="newsletter" method="POST" data-netlify="true" action="/thanks.html">
+            <input type="email" name="email" placeholder="Your electronic mail address..." required>
+            <button type="submit">Subscribe</button>
+        </form>
+    </div>
+    <br>
+    <a href="/index.html" style="color: #000;">← Return to Lychgate</a>
+</body>
+</html>
