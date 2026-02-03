@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vain Hopes | St. Maudlyns-le-Wold</title>
+    <style>
+        body { 
+            background-color: #1a0f0d; 
+            color: #d4ccb8; 
+            font-family: 'Palatino', serif; 
+            margin: 0; padding: 20px;
+            display: flex; justify-content: center;
+        }
+        .notice-board { 
+            width: 100%; max-width: 500px; 
+            background: #2a1b18; 
+            border: 10px solid #3d2b1f; /* Dark wood frame */
+            padding: 30px; box-sizing: border-box;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+        }
+        h1 { font-variant: small-caps; text-align: center; color: #b5a642; margin-top: 0; }
+        p { font-style: italic; text-align: center; font-size: 0.9rem; margin-bottom: 20px; opacity: 0.8; }
+        
+        /* The 'Paper' note styling */
+        textarea { 
+            width: 100%; height: 250px; 
+            background: #fdfaf0; color: #1a0f0d; 
+            border: none; padding: 20px; 
+            font-family: 'Courier', monospace; font-size: 16px; 
+            box-sizing: border-box; margin-bottom: 20px;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+            border-radius: 2px;
+            line-height: 1.5;
+        }
+        
+        button { 
+            width: 100%; padding: 15px; 
+            background: #b5a642; color: #1a0f0d; 
+            border: none; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        button:active { transform: translateY(2px); }
+
+        .back-container { text-align: center; margin-top: 30px; }
+        .back { color: #d4ccb8; text-decoration: none; font-size: 0.9rem; border-bottom: 1px dotted #d4ccb8; }
+    </style>
+</head>
+<body>
+    <div class="notice-board">
+        <h1>Vain Hopes</h1>
+        <p>Pin your petition to the board. <br>Subject to the elements and divine whim.</p>
+        
+        <form name="prayers" method="POST" data-netlify="true" action="/prayers/thank-you.html">
+            <input type="hidden" name="form-name" value="prayers" />
+            <textarea name="petition" placeholder="Type your prayer or vain hope here..." required></textarea>
+            <button type="submit">Pin to the Board</button>
+        </form>
+        
+        <div class="back-container">
+            <a href="/index.html" class="back">← Escape to the Lychgate</a>
+        </div>
+    </div>
+</body>
+</html>
