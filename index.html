@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Maudlyns-le-Wold</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Crimson+Text:ital,wght@1,600&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- DIAGNOSTIC MODE --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            /* If image fails, this DARK RED will show instead of black. */
+            /* If you see RED, your image filename is wrong. */
+            background-color: #3e0000; 
+            font-family: 'Old Standard TT', serif;
+            overflow: hidden;
+        }
+
+        /* --- BACKGROUND --- */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Make sure your file is named EXACTLY 'church-image.png' (lowercase) */
+            background: url('church-image.png') no-repeat center center;
+            background-size: cover;
+            z-index: 1;
+        }
+
+        /* Removed Overlay for clarity during debug */
+
+        header {
+            position: absolute;
+            top: 30px;
+            width: 100%;
+            text-align: center;
+            z-index: 100; /* Super high z-index to force visibility */
+            pointer-events: none;
+        }
+
+        h1 {
+            color: #ffffff; /* Pure White */
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            text-shadow: 0 4px 10px #000;
+            margin: 0;
+        }
+
+        /* --- CONSOLE WRAPPER --- */
+        .console-wrapper {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 380px;
+            z-index: 200; /* Highest z-index */
+            perspective: 1200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* --- WOODEN JAMB --- */
+        .organ-jamb {
+            position: relative;
+            width: 100%;
+            height: 85%;
+            background: linear-gradient(90deg, #3e2b26, #5d4037 20%, #4a332a 50%, #2a1f1d 100%);
+            border-right: 15px solid #1a0f0d;
+            border-top: 5px solid #2a1f1d;
+            border-bottom: 5px solid #2a1f1d;
+            box-shadow: 10px 10px 50px rgba(0,0,0,0.9);
+            transform: rotateY(15deg) translateX(-30px); 
+            transform-origin: left center;
+            padding: 40px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 4px;
+        }
+
+        .stops-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            margin-top: 20px;
+            padding-right: 20px;
+        }
+
+        /* --- STOPS --- */
+        .organ-stop {
+            position: relative;
+            width: 75px;
+            height: 75px;
+            cursor: pointer;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0 5px;
+            z-index: 10;
+        }
+
+        .organ-stop:nth-child(even) { transform: translateY(35px); }
+
+        .stop-rod {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: #222;
+            z-index: 1; /* Rod behind face */
+            transition: width 0.3s ease-out;
+        }
+
+        .stop-face {
+            position: relative;
+            z-index: 5; /* Face in front of rod */
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, #fffbf0, #e0d8c0);
+            border-radius: 50%;
+            border: 3px solid #1a0f0d;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .stop-label {
+            font-family: 'Cinzel', serif;
+            color: #1a0f0d;
+            font-weight: 700;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .stop-footage {
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            color: #8b0000;
+            font-size: 0.7rem;
+            margin-top: 2px;
+        }
+
+        .organ-stop:hover .stop-face { transform: translateX(12px) scale(1.1); }
+        .organ-stop:hover .stop-rod { width: 60px; }
+        .stop-vox .stop-label { color: #8b0000; } 
+        .stop-vox .stop-face { border-color: #5a0000; }
+
+        /* --- MOBILE ADJUSTMENTS --- */
+        @media (max-width: 600px) {
+            .console-wrapper {
+                width: 130px;
+                perspective: none;
+            }
+            .organ-jamb {
+                transform: none;
+                background: #2a1f1d;
+                border-right: 2px solid #000;
+                padding: 20px 5px;
+            }
+            .organ-stop { margin: 10px 0; width: 65px; height: 65px; }
+            .organ-stop:nth-child(even) { transform: none; }
+            .stops-container { gap: 10px; padding-right: 0; }
+            h1 { font-size: 2rem; width: 100%; top: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-container"></div>
+
+    <header>
+        <h1>St. Maudlyns-le-Wold</h1>
+    </header>
+
+    <div class="console-wrapper">
+        <div class="organ-jamb">
+            <div class="stops-container">
+                
+                <a href="sermons/" class="organ-stop">
+                    <div class="stop-rod"></div>
+                    <div class="stop-face">
+                        <span class="stop-label">Sermons</span>
+                        <span class="stop-footage">8'</span>
+                    </div>
+                </a>
+
+                <a href="gazette/" class="organ-stop">
+                    <div class="stop-rod"></div>
+                    <div class="stop-face">
+                        <span class="stop-label">Gazette</span>
+                        <span class="stop-footage">4'</span>
+                    </div>
+                </a>
+
+                <a href="prayers/" class="organ-stop">
+                    <div class="stop-rod"></div>
+                    <div class="stop-face">
+                        <span class="stop-label">Petitions</span>
+                        <span class="stop-footage">16'</span>
+                    </div>
+                </a>
+
+                <a href="vox/" class="organ-stop stop-vox">
+                    <div class="stop-rod"></div>
+                    <div class="stop-face">
+                        <span class="stop-label">Confess</span>
+                        <span class="stop-footage">Vox</span>
+                    </div>
+                </a>
+
+                <a href="sermons/school-of-entropy.html" class="organ-stop">
+                    <div class="stop-rod"></div>
+                    <div class="stop-face">
+                        <span class="stop-label">School</span>
+                        <span class="stop-footage">Mix IV</span>
+                    </div>
+                </a>
+
+                <a href="tea-rota/" class="organ-stop">
+                    <div class="stop-rod"></div>
+                    <div class="stop-face">
+                        <span class="stop-label">Tea Rota</span>
+                        <span class="stop-footage">II</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
