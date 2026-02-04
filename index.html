@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Maudlyns-le-Wold</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Crimson+Text:ital,wght@1,600&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- RESET & GLOBAL --- */
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #0f0a08;
+            font-family: 'Old Standard TT', serif;
+            overflow: hidden;
+            /* GLOBAL PERSPECTIVE: This is the "Camera Lens" that creates 3D depth */
+            perspective: 1000px; 
+        }
+
+        /* --- BACKGROUND --- */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Ensure the filename matches your upload exactly */
+            background: url('church-image.png') no-repeat center center;
+            background-size: cover;
+            /* Push image slightly right so the 3D console doesn't cover the Vicar */
+            background-position: 60% center; 
+            z-index: 1;
+            /* The background stays flat (2D) */
+            transform: translateZ(-100px) scale(1.1); 
+        }
+
+        /* Vignette */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 60% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: absolute;
+            top: 30px;
+            right: 5%;
+            width: 60%;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        h1 {
+            color: #fdfaf0;
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            text-shadow: 0 4px 15px rgba(0,0,0,1);
+            margin: 0;
+        }
+
+        /* --- THE 3D LEFT JAMB (CONSOLE) --- */
+        .console-jamb {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%) rotateY(35deg); /* THE ANGLE */
+            transform-origin: left center; /* Hinge from the left edge */
+            
+            width: 220px; /* Width of the wooden board */
+            padding: 40px 20px;
+            
+            /* Wood Texture */
+            background: linear-gradient(90deg, #3e2723 0%, #5d4037 30%, #4e342e 60%, #2a1e1d 100%);
+            border-right: 12px solid #1a0f0d; /* Thick edge */
+            box-shadow: 20px 20px 50px rgba(0,0,0,0.8); /* Deep shadow */
+            
+            display: flex;
+            flex-direction: column;
+            gap: 40px; /* Space between stops */
+            align-items: center;
+            z-index: 100;
+            
+            /* Ensure 3D children render correctly */
+            transform-style: preserve-3d;
+        }
+
+        /* --- THE 3D STOP MECHANISM --- */
+        .organ-stop {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+            
+            /* This ensures the parts inside move in 3D */
+            transform-style: preserve-3d; 
+            transition: transform 0.1s;
+        }
+
+        /* The "Hole" in the wood (Base) */
+        .stop-base {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: #1a0f0d;
+            border-radius: 50%;
+            box-shadow: inset 0 0 10px #000; /* Inner shadow looks like a hole */
+        }
+
+        /* The Rod (Stalk) */
+        .stop-rod {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Center it, then move it slightly back so it connects to the hole */
+            transform: translate(-50%, -50%) translateZ(-10px);
+            
+            width: 24px; /* Thickness of stalk */
+            height: 24px;
+            background: linear-gradient(to right, #222, #555, #222); /* Metallic cylinder look */
+            
+            /* Use a long length, but we hide the back part in the hole */
+            height: 24px; 
+            width: 24px; 
+            
+            /* We simulate the rod length using thickness (borders) or separate element. 
+               Let's use a pseudo-element for the length to support the 3D stretch */
+        }
+        
+        /* Using a specialized rod that stretches */
+        .rod-connector {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateY(90deg); /* Rotate to face sideways */
+            width: 0px; /* Starts hidden inside */
+            height: 20px; /* Thickness */
+            background: #333;
+            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: left center;
+        }
+
+        /* The Knob Face */
+        .stop-face {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            
+            /* Porcelain Texture */
+            background: radial-gradient(circle at 30% 30%, #fffbf0, #e0d8c0);
+            border-radius: 50%;
+            border: 4px solid #1a0f0d; /* Rim */
+            
+            /* Shadow that falls onto the wood behind it */
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.5); 
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            
+            /* Initial State: Sitting close to the board */
+            transform: translateZ(10px); 
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* --- THE LABELS --- */
+        .stop-label {
+            font-family: 'Cinzel', serif;
+            color: #1a0f0d;
+            font-weight: 700;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1;
+            /* Prevent blurry text during 3D transform */
+            backface-visibility: hidden; 
+        }
+
+        .stop-footage {
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            color: #8b0000;
+            font-size: 0.75rem;
+            margin-top: 2px;
+        }
+
+        /* --- THE PULL-OUT ANIMATION --- */
+        
+        /* When hovering the stop wrapper... */
+        .organ-stop:hover .stop-face {
+            /* Move the knob 50px towards the viewer (Z-axis) */
+            transform: translateZ(60px); 
+            box-shadow: 20px 20px 40px rgba(0,0,0,0.4); /* Shadow moves further away */
+        }
+
+        /* Show the stalk */
+        .organ-stop:hover::before {
+            /* This is a CSS trick to simulate the rod appearing */
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(30px) rotateY(90deg);
+            width: 60px; /* Length of the rod */
+            height: 20px; /* Thickness */
+            background: linear-gradient(to bottom, #222, #666, #222); /* Metallic cylinder */
+            z-index: -1; /* Behind the face */
+        }
+
+        /* Vox Special */
+        .stop-vox .stop-label { color: #8b0000; }
+        .stop-vox .stop-face { border-color: #5a0000; }
+
+        /* --- MOBILE ADJUSTMENTS --- */
+        @media (max-width: 600px) {
+            /* Reduce perspective effects on mobile to prevent glitches */
+            body { perspective: 800px; }
+            .console-jamb { 
+                width: 140px; 
+                transform: rotateY(20deg); /* Less extreme angle on small screens */
+                left: -20px;
+            }
+            h1 { font-size: 2rem; width: 100%; right: 0; top: 10px; }
+            header { width: 100%; right: 0; }
+            .organ-stop { width: 65px; height: 65px; }
+            
+            /* Mobile Hover Fix: Use :active for touch */
+            .organ-stop:active .stop-face { transform: translateZ(60px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-container"></div>
+    <div class="vignette"></div>
+
+    <header>
+        <h1>St. Maudlyns<br>le-Wold</h1>
+    </header>
+
+    <nav class="console-jamb">
+        
+        <a href="sermons/" class="organ-stop">
+            <div class="stop-base"></div>
+            <div class="stop-face">
+                <span class="stop-label">Sermons</span>
+                <span class="stop-footage">8'</span>
+            </div>
+        </a>
+
+        <a href="gazette/" class="organ-stop">
+            <div class="stop-base"></div>
+            <div class="stop-face">
+                <span class="stop-label">Gazette</span>
+                <span class="stop-footage">4'</span>
+            </div>
+        </a>
+
+        <a href="prayers/" class="organ-stop">
+            <div class="stop-base"></div>
+            <div class="stop-face">
+                <span class="stop-label">Petitions</span>
+                <span class="stop-footage">16'</span>
+            </div>
+        </a>
+
+        <a href="vox/" class="organ-stop stop-vox">
+            <div class="stop-base"></div>
+            <div class="stop-face">
+                <span class="stop-label">Confess</span>
+                <span class="stop-footage">Vox</span>
+            </div>
+        </a>
+
+        <a href="sermons/school-of-entropy.html" class="organ-stop">
+            <div class="stop-base"></div>
+            <div class="stop-face">
+                <span class="stop-label">School</span>
+                <span class="stop-footage">Mix IV</span>
+            </div>
+        </a>
+
+        <a href="tea-rota/" class="organ-stop">
+            <div class="stop-base"></div>
+            <div class="stop-face">
+                <span class="stop-label">Tea Rota</span>
+                <span class="stop-footage">II</span>
+            </div>
+        </a>
+
+    </nav>
+
+</body>
+</html>
