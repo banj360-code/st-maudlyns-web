@@ -1,0 +1,44 @@
+/* MASTER PARISH STYLES */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,700;1,400&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap');
+
+body {
+    background-color: #f4f1ea; /* Cream Paper */
+    color: #1a0f0d; /* Black Ink */
+    font-family: 'Old Standard TT', serif;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2, h3 {
+    font-family: 'Cinzel', serif;
+    color: #8b0000; /* Crimson */
+    text-align: center;
+}
+
+/* The Blacklist Table */
+.prohibited-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 30px 0;
+    border: 2px solid #1a0f0d;
+}
+
+.prohibited-table th {
+    background-color: #8b0000;
+    color: #f4f1ea;
+    padding: 15px;
+}
+
+.prohibited-table td {
+    border: 1px solid #d4ccb8;
+    padding: 12px;
+}
+
+/* Sticking E effect */
+.sticky-e {
+    display: inline-block;
+    transform: translateY(-2px) rotate(3deg);
+    font-weight: bold;
+    color: #8b0000;
+}
