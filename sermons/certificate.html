@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Density | St. Maudlyns-le-Wold</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* CERTIFICATE STYLING */
+        .certificate-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 40px;
+            background-color: #f4f1ea;
+            border: 5px double #1a0f0d;
+            text-align: center;
+            position: relative;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.1);
+        }
+
+        .parish-seal {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border: 2px solid #8b0000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cinzel', serif;
+            font-weight: bold;
+            color: #8b0000;
+            font-size: 2rem;
+            background: rgba(139, 0, 0, 0.05);
+        }
+
+        .cert-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: #1a0f0d;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .cert-subtitle {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        .cert-body {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 50px;
+        }
+
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding: 0 50px;
+        }
+
+        .signature-line {
+            border-top: 1px solid #1a0f0d;
+            width: 200px;
+            padding-top: 10px;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        /* PRINT SETTINGS: Hides everything but the certificate */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .certificate-container, .certificate-container * {
+                visibility: visible;
+            }
+            .certificate-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+                border: 3px solid black;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<article class="certificate-container">
+    <div class="parish-seal">St.M</div>
+    
+    <h1 class="cert-title">Certificate of<br>Spiritual Density</h1>
+    <p class="cert-subtitle">Issued by the Vestry of St. Maudlyns-le-Wold</p>
+
+    <div class="cert-body">
+        <p>Be it known by the changing of the seasons that</p>
+        <p style="font-family: 'Cinzel', serif; font-size: 1.5rem; border-bottom: 1px dashed #555; display: inline-block; min-width: 300px; margin: 10px 0;">
+            </p>
+        <p>
+            Has successfully completed <strong>The Syllabus of the Stone</strong>, having resisted the siren call of the Algorithm, endured the Silence of the Room, and purged the colors from their glowing rectangle.
+        </p>
+        <p>
+            They are hereby recognized as a <strong>Low Entropy Citizen</strong>.
+        </p>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-line">
+            The Rev. B. Bassette<br>
+            <span style="font-size: 0.7rem;">(Vicar)</span>
+        </div>
+        <div class="signature-line">
+            Mrs. Miggins<br>
+            <span style="font-size: 0.7rem;">(Parish Clerk)</span>
+        </div>
+    </div>
+
+    <footer style="margin-top: 40px; font-size: 0.8rem; opacity: 0.6;">
+        <p>Valid only in West Oxfordshire and the Kingdom of Heaven.</p>
+        <p class="no-print"><a href="school-of-entropy.html">← Return to the Classroom</a></p>
+    </footer>
+</article>
+
+</body>
+</html>
