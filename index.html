@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Maudlyns-le-Wold</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Crimson+Text:ital,wght@1,600&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- RESET --- */
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #0f0a08;
+            font-family: 'Old Standard TT', serif;
+            overflow: hidden; /* No scrolling the whole page */
+        }
+
+        /* --- BACKGROUND (The Vicar) --- */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Make sure 'church-image.png' is in your folder! */
+            background: url('church-image.png') no-repeat center center;
+            background-size: cover;
+            /* Shift the image slightly right so the wood strip doesn't cover him */
+            background-position: 70% center; 
+            z-index: 1;
+        }
+
+        /* Vignette to make text readable */
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 60% 50%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: absolute;
+            top: 20px;
+            right: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+            padding-left: 100px; /* Offset for the sidebar */
+        }
+
+        h1 {
+            color: #fdfaf0;
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem; /* Readable size */
+            text-shadow: 0 4px 15px rgba(0,0,0,1);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        /* --- LEFT SIDEBAR (The Wood Jamb) --- */
+        .organ-sidebar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0; /* Full height */
+            width: 140px; /* Fixed width strip */
+            
+            /* Realistic Oak Texture */
+            background: linear-gradient(90deg, #5d4037 0%, #8d6e63 20%, #4e342e 50%, #3e2723 100%);
+            border-right: 4px solid #1a0f0d;
+            box-shadow: 5px 0 20px rgba(0,0,0,0.8);
+            z-index: 20;
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 100px; /* Space from top */
+            padding-bottom: 120px; /* Space for keyboard */
+            
+            /* Scroll if screen is too short for all stops */
+            overflow-y: auto; 
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+        }
+        .organ-sidebar::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome */
+
+        /* --- THE STOPS --- */
+        .organ-stop {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 25px; /* Spacing between stops */
+            cursor: pointer;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+            
+            /* Flex layout for content */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        /* ZIG ZAG EFFECT: Push every second stop slightly right */
+        .organ-stop:nth-child(even) {
+            transform: translateX(20px);
+        }
+
+        /* The Pull-Out Rod (Behind the face) */
+        .stop-rod {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: #222;
+            z-index: 1;
+            box-shadow: inset 0 0 5px #000;
+            transition: width 0.3s ease-out;
+            border-radius: 10px;
+        }
+
+        /* The Face (Knob) */
+        .stop-face {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            /* Creamy Porcelain Color */
+            background: radial-gradient(circle at 30% 30%, #fffbf0, #e0d8c0);
+            border-radius: 50%;
+            border: 4px solid #1a0f0d; /* Dark Rim */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stop-label {
+            font-family: 'Cinzel', serif;
+            color: #1a0f0d;
+            font-weight: 700;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .stop-footage {
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            color: #8b0000;
+            font-size: 0.7rem;
+            margin-top: 2px;
+        }
+
+        /* Animation */
+        .organ-stop:hover .stop-face { transform: scale(1.1); }
+        .organ-stop:hover .stop-rod { width: 60px; transform: translate(-30%, -50%); }
+
+        /* VOX Special Color */
+        .stop-vox .stop-label { color: #8b0000; }
+        .stop-vox .stop-face { border-color: #4a0000; }
+
+        /* --- BOTTOM KEYBOARD --- */
+        .manual-wrapper {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            z-index: 30;
+            background: linear-gradient(to bottom, #3e2723, #1a0f0d);
+            border-top: 5px solid #5d4037;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+        }
+
+        .key-white {
+            flex: 1;
+            max-width: 50px;
+            height: 100%;
+            background: linear-gradient(to bottom, #fffff0 0%, #e8e0d0 100%);
+            border-right: 1px solid #aaa;
+            border-radius: 0 0 5px 5px;
+            position: relative;
+            cursor: pointer;
+        }
+        .key-white:active { background: #ccc; transform: translateY(2px); }
+
+        .key-black {
+            width: 30px;
+            height: 60%;
+            background: linear-gradient(to bottom, #333, #000);
+            position: absolute;
+            top: 0;
+            left: -15px; /* Centers it on the line between white keys */
+            z-index: 10;
+            border-radius: 0 0 3px 3px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            pointer-events: none; /* Let clicks pass to white keys for now unless specifically targeting */
+        }
+
+        /* --- MOBILE ADJUSTMENTS --- */
+        @media (max-width: 600px) {
+            /* On mobile, make the strip narrower */
+            .organ-sidebar { width: 100px; padding-top: 80px; }
+            .organ-stop { width: 65px; height: 65px; margin-bottom: 20px; }
+            /* Remove Zig Zag on small screens to keep it neat */
+            .organ-stop:nth-child(even) { transform: none; }
+            
+            /* Header adjustments */
+            header { padding-left: 0; top: 15px; }
+            h1 { font-size: 1.8rem; padding-left: 90px; text-align: left; }
+            
+            /* Adjust keyboard */
+            .manual-wrapper { height: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-container"></div>
+    <div class="vignette"></div>
+
+    <header>
+        <h1>St. Maudlyns<br>le-Wold</h1>
+    </header>
+
+    <nav class="organ-sidebar">
+        
+        <a href="sermons/" class="organ-stop">
+            <div class="stop-rod"></div>
+            <div class="stop-face">
+                <span class="stop-label">Sermons</span>
+                <span class="stop-footage">8'</span>
+            </div>
+        </a>
+
+        <a href="gazette/" class="organ-stop">
+            <div class="stop-rod"></div>
+            <div class="stop-face">
+                <span class="stop-label">Gazette</span>
+                <span class="stop-footage">4'</span>
+            </div>
+        </a>
+
+        <a href="prayers/" class="organ-stop">
+            <div class="stop-rod"></div>
+            <div class="stop-face">
+                <span class="stop-label">Petitions</span>
+                <span class="stop-footage">16'</span>
+            </div>
+        </a>
+
+        <a href="vox/" class="organ-stop stop-vox">
+            <div class="stop-rod"></div>
+            <div class="stop-face">
+                <span class="stop-label">Confess</span>
+                <span class="stop-footage">Vox</span>
+            </div>
+        </a>
+
+        <a href="sermons/school-of-entropy.html" class="organ-stop">
+            <div class="stop-rod"></div>
+            <div class="stop-face">
+                <span class="stop-label">School</span>
+                <span class="stop-footage">Mix IV</span>
+            </div>
+        </a>
+
+        <a href="tea-rota/" class="organ-stop">
+            <div class="stop-rod"></div>
+            <div class="stop-face">
+                <span class="stop-label">Tea Rota</span>
+                <span class="stop-footage">II</span>
+            </div>
+        </a>
+
+    </nav>
+
+    <footer class="manual-wrapper">
+        <div class="key-white"></div>
+        <div class="key-white"><div class="key-black"></div></div>
+        <div class="key-white"><div class="key-black"></div></div>
+        <div class="key-white"></div>
+        <div class="key-white"><div class="key-black"></div></div>
+        <div class="key-white"><div class="key-black"></div></div>
+        <div class="key-white"><div class="key-black"></div></div>
+        <div class="key-white"></div>
+    </footer>
+
+</body>
+</html>
