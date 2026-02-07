@@ -1,0 +1,211 @@
+/* --- GLOBAL ORDINANCES --- */
+:root {
+    --paper: #f4f1ea;
+    --ink: #1a0f0d;
+    --crimson: #8b0000;
+    --border-thick: 3px double var(--ink);
+}
+
+body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'Old Standard TT', serif;
+    margin: 0;
+    padding: 20px;
+}
+
+/* --- THE SHEET LAYOUT --- */
+.ledger-sheet {
+    max-width: 900px;
+    margin: 0 auto;
+    border: var(--border-thick);
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+/* --- TYPOGRAPHY --- */
+h1 {
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.sub-header {
+    text-align: center;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin-top: 0;
+}
+
+.double-line {
+    border: 0;
+    border-top: var(--border-thick);
+    margin: 20px 0;
+}
+
+/* --- MAIN PLATE (Top Image) --- */
+.main-plate {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.plate-frame {
+    border: 8px ridge #d4ccb8; /* Frame effect */
+    display: inline-block;
+    padding: 5px;
+}
+
+.plate-frame img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.plate-controls {
+    text-align: right;
+    margin-top: 10px;
+}
+
+/* --- THE FILM STRIP (CSS Magic) --- */
+.film-container {
+    background: #fff;
+    border: 1px solid #000;
+    padding: 0;
+}
+
+.sprocket-strip {
+    height: 25px;
+    background-color: var(--ink);
+    /* Creates the white holes using radial gradients */
+    background-image: radial-gradient(#fff 40%, transparent 45%);
+    background-size: 20px 20px; /* Size of the holes */
+    background-position: center;
+    background-repeat: repeat-x;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+}
+
+.grid-12 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Mobile: 2 cols */
+    gap: 20px;
+    padding: 30px;
+}
+
+@media (min-width: 768px) {
+    .grid-12 {
+        grid-template-columns: repeat(4, 1fr); /* Desktop: 4 cols */
+    }
+}
+
+/* --- THUMBNAILS --- */
+.grid-item {
+    text-align: center;
+}
+
+.thumb-link {
+    display: block;
+    border: 1px solid #ccc;
+    padding: 5px;
+    transition: transform 0.2s;
+}
+
+.thumb-link:hover {
+    transform: scale(1.03);
+    border-color: var(--crimson);
+}
+
+.sepia-filter {
+    width: 100%;
+    filter: sepia(100%) contrast(1.1);
+    display: block;
+}
+
+.caption {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+
+/* --- BUTTONS --- */
+.button-box {
+    display: inline-block;
+    border: 1px solid var(--ink);
+    padding: 8px 15px;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    background: #fff;
+    transition: 0.3s;
+}
+
+.button-box:hover {
+    background: var(--ink);
+    color: #fff;
+}
+
+/* --- LIGHTBOX MECHANISM (The Full View) --- */
+.lightbox-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 5, 5, 0.95);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* When the URL matches the ID (e.g. #view-1), show the overlay */
+.lightbox-overlay:target {
+    display: flex;
+}
+
+.lightbox-content {
+    text-align: center;
+    position: relative;
+    max-width: 90%;
+}
+
+.full-img {
+    max-height: 70vh;
+    border: 10px solid #fff;
+    margin-bottom: 20px;
+}
+
+.overlay-btn {
+    display: block;
+    width: 200px;
+    margin: 0 auto;
+    background: var(--paper);
+}
+
+.close-x {
+    position: absolute;
+    top: 20px; right: 30px;
+    color: #fff;
+    font-size: 3rem;
+    text-decoration: none;
+}
+
+/* --- DESCRIPTION CARD (The Text View) --- */
+.text-mode .desc-card {
+    background: var(--paper);
+    padding: 40px;
+    border: 4px double var(--ink);
+    max-width: 500px;
+    text-align: center;
+}
+
+.legal-footer {
+    text-align: center;
+    font-size: 0.7rem;
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}

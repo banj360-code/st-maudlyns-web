@@ -1,0 +1,153 @@
+/* --- Fundamental Palette & Type --- */
+:root {
+    --paper: #f4f1ea;
+    --ink: #1a0f0d;
+    --crimson: #8b0000;
+}
+
+body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'Old Standard TT', serif;
+    margin: 0;
+    padding: 2rem;
+    line-height: 1.6;
+}
+
+h1, h2 {
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 0.2rem;
+    margin: 0.5rem 0;
+}
+
+.double-line {
+    border: none;
+    border-top: 3px double var(--ink);
+    margin: 1.5rem auto;
+    width: 80%;
+}
+
+/* --- The Prologue (Video) --- */
+.prologue-chamber {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.video-frame {
+    border: 3px double var(--ink);
+    display: inline-block;
+    padding: 10px;
+    background: #000;
+}
+
+video {
+    max-width: 100%;
+    filter: sepia(100%) contrast(110%);
+}
+
+/* --- The Contact Sheet --- */
+.contact-sheet {
+    background: #ffffff;
+    border: 1px solid #ccc;
+    padding: 2rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.film-header, .film-footer {
+    display: flex;
+    justify-content: space-between;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 5px 20px;
+    font-size: 0.8rem;
+    font-family: monospace;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 30px;
+    padding: 40px 0;
+}
+
+.gallery-item {
+    text-align: center;
+}
+
+.thumb-link {
+    display: block;
+    border: 1px solid #ddd;
+    padding: 5px;
+    background: #fff;
+    transition: transform 0.2s;
+}
+
+.thumb-link:hover {
+    transform: scale(1.05);
+    border-color: var(--crimson);
+}
+
+.daguerreotype {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: sepia(100%) contrast(120%) brightness(90%);
+}
+
+.caption-field {
+    margin-top: 10px;
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    border-bottom: 1px dashed #ccc;
+    min-height: 1.2rem;
+    outline: none;
+}
+
+/* --- Lightbox (The Sacred Zoom) --- */
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(16, 10, 9, 0.95);
+    text-align: center;
+}
+
+.lightbox:target {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox img {
+    max-width: 80%;
+    max-height: 80%;
+    border: 10px solid #fff;
+    filter: sepia(80%);
+}
+
+.close-gate {
+    color: var(--paper);
+    font-size: 3rem;
+    text-decoration: none;
+    position: absolute;
+    top: 20px; right: 40px;
+}
+
+/* --- Accents --- */
+.crimson-italic {
+    color: var(--crimson);
+    font-style: italic;
+}
+
+.archival-note {
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+

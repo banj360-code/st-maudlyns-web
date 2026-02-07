@@ -1,0 +1,64 @@
+/* --- THE FILM STRIP ARCHIVE --- */
+
+.archive-grid {
+    display: grid;
+    /* Forces a 4-column layout on desktop to match your image */
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 2rem 1.5rem; /* Row gap | Column gap */
+    padding: 3rem 2rem;
+    margin: 2rem auto;
+    max-width: 1200px;
+    background-color: #f4f1ea; /* Cream paper background */
+    
+    /* THE SPROCKET BORDER MAGIC */
+    position: relative;
+    border-top: 24px solid #1a0f0d;    /* The physical film strip top */
+    border-bottom: 24px solid #1a0f0d; /* The physical film strip bottom */
+}
+
+/* Creating the white sprocket holes using pseudo-elements */
+.archive-grid::before,
+.archive-grid::after {
+    content: "";
+    position: absolute;
+    left: 0; 
+    right: 0;
+    height: 12px;
+    background-image: radial-gradient(circle, #f4f1ea 40%, transparent 45%);
+    background-size: 20px 20px; /* Spacing of the holes */
+    background-repeat: repeat-x;
+}
+
+.archive-grid::before {
+    top: -18px; /* Position inside the top black border */
+}
+
+.archive-grid::after {
+    bottom: -18px; /* Position inside the bottom black border */
+}
+
+/* Mobile Responsiveness: The strip breaks into a single column on handsets */
+@media (max-width: 768px) {
+    .archive-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.prologue-btn {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    text-decoration: none;
+    color: #1a0f0d;
+    border: 2px solid #1a0f0d;
+    padding: 0.8rem 2rem;
+    background-color: transparent;
+    transition: all 0.3s ease;
+    box-shadow: 4px 4px 0px rgba(26, 15, 13, 0.1);
+}
+
+.prologue-btn:hover {
+    background-color: #1a0f0d;
+    color: #f4f1ea;
+    box-shadow: 2px 2px 0px rgba(26, 15, 13, 0.2);
+}

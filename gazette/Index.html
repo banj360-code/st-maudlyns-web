@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Parish Gazette</title>
+    <title>The Parish Gazette - Entrance</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: #f4f1ea; /* Newsprint */
             color: #1a0f0d;
             font-family: 'Old Standard TT', serif;
-            padding: 20px; /* Reduced padding for mobile */
+            padding: 20px;
             text-align: center;
             margin: 0;
         }
         .sheet {
             max-width: 600px;
-            margin: 0 auto;
+            margin: 20px auto;
             border: 4px double #1a0f0d;
             padding: 40px;
             background: #fff;
-            box-sizing: border-box; /* Keeps padding inside the width */
-            overflow: hidden; /* Prevents spillover */
+            box-sizing: border-box;
+            overflow: hidden;
         }
         
         h1 { 
@@ -30,19 +30,47 @@
             border-bottom: 2px solid #000; 
             margin-bottom: 10px; 
             line-height: 1.2;
-            word-wrap: break-word; /* Prevents long words breaking layout */
+            word-wrap: break-word;
         }
 
         .date { font-style: italic; border-bottom: 1px solid #000; display: block; padding-bottom: 20px; margin-bottom: 30px; }
-        input { padding: 10px; width: 70%; border: 1px solid #000; margin-bottom: 10px; }
-        button { padding: 10px 20px; background: #000; color: #fff; border: none; cursor: pointer; }
-        button:hover { background: #8b0000; }
+        
+        input { padding: 10px; width: 70%; border: 1px solid #000; margin-bottom: 10px; font-family: inherit; }
+        
+        /* The Action Buttons */
+        .btn-action { 
+            padding: 10px 20px; 
+            background: #000; 
+            color: #fff; 
+            border: none; 
+            cursor: pointer; 
+            font-family: 'Cinzel', serif;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #1a0f0d;
+            border: 1px solid #1a0f0d;
+        }
+
+        .btn-action:hover { background: #8b0000; color: #fff; border-color: #8b0000; }
+
+        .divider {
+            margin: 25px 0;
+            font-style: italic;
+            color: #888;
+        }
 
         /* --- MOBILE FIX --- */
         @media (max-width: 600px) {
-            h1 { font-size: 1.8rem; } /* Shrinks title on phone */
-            .sheet { padding: 20px; } /* Gives more room for text */
+            h1 { font-size: 1.8rem; }
+            .sheet { padding: 20px; }
             input { width: 100%; box-sizing: border-box; }
+            .btn-action { width: 100%; box-sizing: border-box; margin: 5px 0; }
         }
     </style>
 </head>
@@ -55,10 +83,16 @@
         
         <form name="newsletter" method="POST" data-netlify="true" action="/thanks.html">
             <input type="email" name="email" placeholder="Your electronic mail address..." required>
-            <button type="submit">Subscribe</button>
+            <button type="submit" class="btn-action">Subscribe</button>
         </form>
+
+        <div class="divider">— OR —</div>
+
+        <p>If you seek the visual records of the parish archives:</p>
+        <a href="pictorial-ledger.html" class="btn-action btn-secondary">[ ✝ CONTINUE TO ONLINE EDITION ]</a>
     </div>
+    
     <br>
-    <a href="/index.html" style="color: #000;">← Return to Lychgate</a>
+    <a href="/index.html" style="color: #000; text-decoration: none;">← Return to Lychgate</a>
 </body>
 </html>

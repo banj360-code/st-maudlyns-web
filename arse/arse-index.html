@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Maudlyns - The Archives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Crimson+Text:ital@1&display=swap" rel="stylesheet">
+    <style>
+        /* --- THE SEXTON'S VISUAL ORDINANCES --- */
+        :root {
+            --paper: #f4f1ea;
+            --ink: #1a0f0d;
+            --crimson: #8b0000;
+        }
+
+        body {
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Old Standard TT', serif;
+            margin: 0;
+            padding: 10px;
+        }
+
+        /* --- THE HEADER --- */
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 3px double var(--ink);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            margin: 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-style: italic;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: block;
+        }
+
+        /* --- THE PROLOGUE (VIDEO) --- */
+        .prologue-chamber {
+            max-width: 800px;
+            margin: 0 auto 60px auto;
+            text-align: center;
+            position: relative;
+        }
+
+        .video-frame {
+            border: 5px solid var(--ink);
+            padding: 5px;
+            background: #000;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.1);
+        }
+
+        video {
+            width: 100%;
+            display: block;
+            filter: sepia(80%) contrast(1.1);
+        }
+
+        /* The Skip Button - A concession to impatience */
+        .skip-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: 1px solid var(--ink);
+            color: var(--ink);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .skip-btn:hover {
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        /* --- THE ARCHIVES (12-GRID) --- */
+        .ledger-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background: #fff;
+            /* Scroll anchor offset */
+            scroll-margin-top: 20px; 
+        }
+
+        .ledger-header {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 5px 10px;
+            font-family: monospace;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .grid-12 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Mobile: 2 columns */
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-12 {
+                grid-template-columns: repeat(4, 1fr); /* Desktop: 4 columns */
+            }
+        }
+
+        /* Individual Photo Slots */
+        .photo-slot {
+            text-align: center;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            background: #fafafa;
+        }
+
+        .daguerreotype {
+            width: 100%;
+            height: auto;
+            filter: sepia(100%) contrast(1.2) brightness(0.9);
+            border: 1px solid #999;
+            display: block;
+            transition: filter 0.5s;
+        }
+
+        .daguerreotype:hover {
+            filter: sepia(20%) contrast(1); /* Reveals true color on hover */
+            cursor: crosshair;
+        }
+
+        .caption {
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            min-height: 1.2em;
+            border-bottom: 1px dotted transparent;
+        }
+
+        .caption:focus {
+            border-bottom: 1px dotted var(--crimson);
+            outline: none;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+            border-top: 3px double var(--ink);
+            padding-top: 20px;
+        }
+
+        a { color: var(--ink); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Pictorial Ledger</h1>
+        <span class="subtitle">From the Archives of St. Maudlyns-le-Wold</span>
+    </header>
+
+    <section class="prologue-chamber">
+        <div class="video-frame">
+            <video controls poster="https://via.placeholder.com/800x450/3e2723/ffffff?text=The+Prologue">
+                <source src="assets/prologue.mp4" type="video/mp4">
+                The moving picture machine is broken.
+            </video>
+        </div>
+        
+        <a href="#archives" class="skip-btn">
+            [ ✝ SKIP PROLOGUE ]
+        </a>
+    </section>
+
+    <section id="archives" class="ledger-container">
+        <div class="ledger-header">
+            <span>REF: 1898-B</span>
+            <span>SHEET: 1 OF 1</span>
+        </div>
+
+        <div class="grid-12">
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+1" class="daguerreotype">
+                <div class="caption" contenteditable="true">The Vicarage Gardens</div>
+            </div>
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+2" class="daguerreotype">
+                <div class="caption" contenteditable="true">The Pulpit</div>
+            </div>
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+3" class="daguerreotype">
+                <div class="caption" contenteditable="true">Easter Font</div>
+            </div>
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+4" class="daguerreotype">
+                <div class="caption" contenteditable="true">Bell Tower</div>
+            </div>
+
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+5" class="daguerreotype">
+                <div class="caption" contenteditable="true">Village School</div>
+            </div>
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+6" class="daguerreotype">
+                <div class="caption" contenteditable="true">Glebe Lands</div>
+            </div>
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+7" class="daguerreotype">
+                <div class="caption" contenteditable="true">Harvest Festival</div>
+            </div>
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+8" class="daguerreotype">
+                <div class="caption" contenteditable="true">The Benefactors</div>
+            </div>
+
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+9" class="daguerreotype">
+                <div class="caption" contenteditable="true">Old Rectory</div>
+            </div>
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+10" class="daguerreotype">
+                <div class="caption" contenteditable="true">Matins</div>
+            </div>
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+11" class="daguerreotype">
+                <div class="caption" contenteditable="true">Evensong</div>
+            </div>
+            <div class="photo-slot">
+                <img src="https://via.placeholder.com/300x350/555/eee?text=IMAGE+12" class="daguerreotype">
+                <div class="caption" contenteditable="true">The Sexton's Spade</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; Anno Domini 2024 — St. Maudlyns-le-Wold</p>
+        <p><a href="index.html">← Return to Gazette Front Page</a></p>
+    </footer>
+
+</body>
+</html>
