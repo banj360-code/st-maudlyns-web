@@ -102,7 +102,7 @@ body {
     z-index: 100;
     
     /* DIAGNOSTIC RED BORDER - DELETE THIS LINE LATER */
-    border: 3px solid red; 
+    border: 0px solid red; 
 }
 
 /* --- 6. THE CARDS (Debugged) --- */
