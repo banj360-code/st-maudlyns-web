@@ -1,0 +1,272 @@
+/* =========================================
+   THE PARISH GAZETTE - DEBUGGED STYLESHEET
+   Location: /notices/style.css
+   ========================================= */
+
+/* --- 1. GLOBAL FOUNDATIONS --- */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #100a09;
+    font-family: 'Old Standard TT', serif;
+    overflow-x: hidden;
+}
+
+.nav-return {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2000;
+    color: #d4ccb8;
+    text-decoration: none;
+    font-family: 'Cinzel', serif;
+    border: 1px solid #d4ccb8;
+    padding: 8px 15px;
+    background: rgba(16, 10, 9, 0.8);
+}
+
+/* --- 2. THE THEATRE --- */
+.notices-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    background-color: #1a0f0d;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 3px double #d4ccb8;
+    border-right: 3px double #d4ccb8;
+}
+
+/* --- 3. VIDEO & BUTTON --- */
+.intro-video {
+    width: 100%;
+    height: auto;
+    max-height: 100vh;
+    display: block;
+    position: relative; 
+    z-index: 999; 
+}
+
+.skip-btn {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    z-index: 2000;
+    background: rgba(16, 10, 9, 0.8); 
+    color: #d4ccb8; 
+    border: 1px solid #d4ccb8;
+    font-family: 'Cinzel', serif;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+/* --- 4. THE BOARD STRUCTURE --- */
+.board-stage {
+    display: none; 
+    opacity: 0;
+    transition: opacity 1.5s ease-in;
+    width: 100%;
+}
+
+.reveal-now {
+    display: block;
+    opacity: 1;
+}
+
+.board-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.board-bg {
+    width: 100%;
+    display: block;
+    position: relative;
+    z-index: 1; /* Board sits at the back */
+}
+
+/* --- 5. THE PINS CONTAINER (Debugged) --- */
+.pins-container {
+    position: absolute;
+    
+    /* MARGINS */
+    top: 12%;
+    bottom: 10%;
+    left: 8%;
+    right: 10%;
+    
+    /* Ensure it sits ON TOP of the board image */
+    z-index: 100;
+    
+    /* DIAGNOSTIC RED BORDER - DELETE THIS LINE LATER */
+    border: 3px solid red; 
+}
+
+/* --- 6. THE CARDS (Debugged) --- */
+.pinned-card {
+    position: absolute;
+    padding: 0px;
+    background: #fdfbf7; /* White paper color */
+    border: 1px solid #ccc; /* Slight grey border to make it visible */
+    
+    /* CRITICAL FIX: Give them minimum size so they appear even without images */
+    min-width: 50px;
+    min-height: 70px;
+    
+    box-shadow: 2px 4px 8px rgba(0,0,0,0.6);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    transform-origin: center top; 
+}
+
+.pinned-card:hover {
+    z-index: 500;
+    transform: scale(1.1) !important;
+}
+
+.pinned-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* If image is missing, the alt text will show */
+    min-height: 20px; 
+}
+
+/* Red Pin Head */
+.pinned-card::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at 30% 30%, #d9534f, #8b0000);
+    border-radius: 50%;
+    z-index: 10;
+}
+
+/* --- 7. PAPER SIZES --- */
+.paper-a4 { width: 22%; aspect-ratio: 1/1.414; }
+.paper-a5 { width: 16%; aspect-ratio: 1/1.414; }
+.paper-biz { width: 13%; aspect-ratio: 1.75/1; }
+
+/* --- 8. TILTS --- */
+.tilt-1 { transform: rotate(-3deg); }
+.tilt-2 { transform: rotate(2deg); }
+.tilt-3 { transform: rotate(-5deg); }
+.tilt-4 { transform: rotate(4deg); }
+
+/* --- 9. LIGHTBOX --- */
+.chapel-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(16, 10, 9, 0.95);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+/* --- 11. THE VIEWING CHAPEL (Lightbox Overlay) --- */
+.chapel-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(16, 10, 9, 0.95); /* Dark background */
+    z-index: 9999; /* Highest priority */
+    
+    /* Center the image */
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    backdrop-filter: blur(5px); /* Blurs the board behind it */
+}
+
+.chapel-overlay.active {
+    display: flex; /* Flex centers everything */
+    animation: fadeIn 0.3s ease-out;
+}
+
+.chapel-frame {
+    /* This frame holds the image */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#chapel-image {
+    /* SCALE LOGIC: Make it as big as the screen allows */
+    max-width: 90vw;  /* 90% of viewport width */
+    max-height: 85vh; /* 85% of viewport height */
+    width: auto;
+    height: auto;
+    
+    display: block;
+    object-fit: contain; /* Don't stretch/distort */
+    
+    border: 2px solid #d4ccb8; /* Gold rim */
+    box-shadow: 0 0 60px rgba(0,0,0,1); /* Deep glow */
+}
+
+.chapel-close {
+    margin-top: 15px;
+    background: transparent;
+    color: #d4ccb8;
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    border: 1px solid #d4ccb8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.chapel-close:hover {
+    background: #8b0000;
+    color: #fff;
+    border-color: #8b0000;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+}
+/* --- DEBUGGING: CARD NUMBERS --- */
+
+/* 1. Reset the counter at the container */
+.pins-container {
+    counter-reset: card-counter;
+}
+
+/* 2. Print the number on every card */
+.pinned-card::before {
+    counter-increment: card-counter; /* Count up 1, 2, 3... */
+    content: counter(card-counter);  /* Display the number */
+    
+    /* Position it in the center */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    /* Style the text */
+    font-size: 2rem;
+    font-weight: bold;
+    color: rgba(0,0,0,0.3); /* Faint grey transparent */
+    z-index: 50;
+    pointer-events: none; /* Let clicks pass through to the button */
+}

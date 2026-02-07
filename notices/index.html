@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>St. Maudlyns - Parish Notices</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Old+Standard+TT:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <a href="../index.html" class="nav-return">← The Lychgate</a>
+
+    <section class="notices-container">
+
+        <video id="intro-reel" class="intro-video" autoplay muted playsinline>
+            <source src="video/intro.mp4" type="video/mp4">
+        </video>
+
+        <button id="skip-btn" class="skip-btn" onclick="liftCurtain()">
+            [ ⏩ Skip Intro ]
+        </button>
+
+        <div id="notice-board-stage" class="board-stage">
+            <div class="board-wrapper">
+                <img src="images/noticeboard.png" alt="Board" class="board-bg">
+
+                pinned-card paper-a4 tilt-4" sty<div class="pins-container">
+              <div class="pins-container">
+                    
+                    <button class="pinned-card paper-biz tilt-1" style="top: 1%; left: 3%;" onclick="viewCard('images/card_01.jpg')">
+                        <img src="images/card_01.jpg" alt="Notice 1">
+                    </button>
+
+                    <button class="pinned-card paper-biz tilt-2" style="top: 1%; left: 85%;" onclick="viewCard('images/card_02.jpg')">
+                        <img src="images/card_02.jpg" alt="Notice 2">
+                    </button>
+
+                    <button class="pinned-card paper-biz tilt-3" style="top: 15%; left: 45%;" onclick="viewCard('images/card_03.jpg')">
+                        <img src="images/card_03.jpg" alt="Notice 3">
+                    </button>
+
+                    <button class="pinned-card paper-biz tilt-4" style="top: 25%; left: 2%;" onclick="viewCard('images/card_04.jpg')">
+                        <img src="images/card_04.jpg" alt="Notice 4">
+                    </button>
+
+                    <button class="pinned-card paper-biz tilt-1" style="top: 35%; left: 88%;" onclick="viewCard('images/card_05.jpg')">
+                        <img src="images/card_05.jpg" alt="Notice 5">
+                    </button>
+
+                    <button class="pinned-card paper-biz tilt-2" style="top: 45%; left: 30%;" onclick="viewCard('images/card_06.jpg')">
+                        <img src="images/card_06.jpg" alt="Notice 6">
+                    </button>
+
+                    <button class="pinned-card paper-biz tilt-3" style="top: 55%; left: 55%;" onclick="viewCard('images/card_07.jpg')">
+                        <img src="images/card_07.jpg" alt="Notice 7">
+                    </button>
+
+                    <button class="pinned-card paper-biz tilt-4" style="top: 65%; left: 10%;" onclick="viewCard('images/card_08.jpg')">
+                        <img src="images/card_08.jpg" alt="Notice 8">
+                    </button>
+
+                    <button class="pinned-card paper-biz tilt-1" style="top: 72%; left: 40%;" onclick="viewCard('images/card_09.jpg')">
+                        <img src="images/card_09.jpg" alt="Notice 9">
+                    </button>
+
+                    <button class="pinned-card paper-biz tilt-2" style="top: 75%; left: 80%;" onclick="viewCard('images/card_10.jpg')">
+                        <img src="images/card_10.jpg" alt="Notice 10">
+                    </button>
+
+
+                    <button class="pinned-card paper-a5 tilt-3" style="top: 1%; left: 25%;" onclick="viewCard('images/melania-tart.png')">
+                        <img src="images/melania-tart.png" alt="Notice 11">
+                    </button>
+
+                    <button class="pinned-card paper-a5 tilt-4" style="top: 1%; left: 65%;" onclick="viewCard('images/card_12.jpg')">
+                        <img src="images/card_12.jpg" alt="Notice 12">
+                    </button>
+
+                    <button class="pinned-card paper-a5 tilt-1" style="top: 20%; left: 15%;" onclick="viewCard('images/card_13.jpg')">
+                        <img src="images/card_13.jpg" alt="Notice 13">
+                    </button>
+
+                    <button class="pinned-card paper-a5 tilt-2" style="top: 18%; left: 75%;" onclick="viewCard('images/card_14.jpg')">
+                        <img src="images/card_14.jpg" alt="Notice 14">
+                    </button>
+
+                    <button class="pinned-card paper-a5 tilt-3" style="top: 40%; left: 5%;" onclick="viewCard('images/card_15.jpg')">
+                        <img src="images/card_15.jpg" alt="Notice 15">
+                    </button>
+
+                    <button class="pinned-card paper-a5 tilt-4" style="top: 50%; left: 70%;" onclick="viewCard('images/card_16.jpg')">
+                        <img src="images/card_16.jpg" alt="Notice 16">
+                    </button>
+
+                    <button class="pinned-card paper-a5 tilt-1" style="top: 60%; left: 25%;" onclick="viewCard('images/card_17.jpg')">
+                        <img src="images/card_17.jpg" alt="Notice 17">
+                    </button>
+
+
+                    <button class="pinned-card paper-a4 tilt-2" style="top: 5%; left: 42%;" onclick="viewCard('images/card_18.jpg')">
+                        <img src="images/card_18.jpg" alt="Notice 18">
+                    </button>
+
+                    <button class="pinned-card paper-a4 tilt-3" style="top: 30%; left: 60%;" onclick="viewCard('images/card_19.jpg')">
+                        <img src="images/card_19.jpg" alt="Notice 19">
+                    </button>
+
+                    <button class="pinned-card paper-a4 tilt-4" style="top: 35%; left: 15%;" onclick="viewCard('images/card_20.jpg')">
+                        <img src="images/card_20.jpg" alt="Notice 20">
+                    </button>
+
+                </div>      
+            </div>
+        </div>
+    </section>
+
+    <div id="viewing-chapel" class="chapel-overlay" onclick="closeChapel()">
+        <div class="chapel-frame">
+            <img id="chapel-image" src="" alt="Readable Notice">
+        </div>
+        <button class="chapel-close" onclick="closeChapel()">[ ✝ RETURN TO BOARD ]</button>
+    </div>
+
+    <script>
+        // MAIN FUNCTION: Hides video/button, shows board
+        function liftCurtain() {
+            var v = document.getElementById('intro-reel');
+            var b = document.getElementById('skip-btn');
+            var s = document.getElementById('notice-board-stage');
+
+            if(v) { v.pause(); v.style.display='none'; v.remove(); }
+            if(b) { b.style.display='none'; b.remove(); }
+            if(s) { s.classList.add('reveal-now'); }
+        }
+
+        // AUTO-RUN LOGIC
+        document.addEventListener("DOMContentLoaded", function() {
+            var vid = document.getElementById('intro-reel');
+            if(vid) {
+                vid.addEventListener('ended', liftCurtain);
+                vid.addEventListener('error', liftCurtain);
+                // Force skip after 6 seconds if stuck
+                setTimeout(function() {
+                    if(document.getElementById('intro-reel')) liftCurtain();
+                }, 6000);
+            } else {
+                liftCurtain();
+            }
+        });
+
+        // LIGHTBOX LOGIC
+        var ch = document.getElementById('viewing-chapel');
+        var img = document.getElementById('chapel-image');
+
+        function viewCard(src) {
+            img.src = src;
+            ch.classList.add('active');
+        }
+        function closeChapel() {
+            ch.classList.remove('active');
+            setTimeout(function(){ img.src=""; }, 300);
+        }
+        document.addEventListener('keydown', function(e) {
+            if(e.key === "Escape") closeChapel();
+        });
+    </script>
+</body>
+</html>
