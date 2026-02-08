@@ -1,0 +1,128 @@
+/* 1. THE ATMOSPHERE (Background) */
+body {
+    background-color: #050505; /* Near black */
+    background-image: radial-gradient(circle at center, #1a1a1d 0%, #000000 100%);
+    color: #dcdcdc; /* Old parchment white */
+    font-family: ''EB Garamond'', serif;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
+    overflow: hidden;        /* No scrolling, like a fixed gaze */
+}
+
+/* 2. THE CONFESSIONAL BOOTH (The Container) */
+.confessional-booth {
+    background: rgba(20, 10, 10, 0.8); /* Dark, semi-transparent glass */
+    border: 8px solid #2a2a2a; /* Lead 'cames' of the window */
+    border-top: 8px solid #4a4a4a; /* Highlight on top */
+    padding: 3rem;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    
+    /* The Gothic Arch Shape */
+    border-radius: 200px 200px 10px 10px; 
+    
+    /* THE CANDLE FLICKER ANIMATION */
+    box-shadow: 0 0 30px rgba(255, 165, 0, 0.2);
+    animation: flicker 4s infinite alternate;
+}
+
+/* 3. THE TYPOGRAPHY */
+.gothic-title {
+    font-family: 'Playfair Display SC', serif; /* Changed from Unifraktur */
+    font-size: 3rem; /* Slightly smaller as this font is wide */
+    text-transform: uppercase; /* Forces the 'engraved' look */
+    letter-spacing: 3px; /* Widens it for elegance */
+    /* ... */
+}
+
+.quote {
+    font-style: italic;
+    color: #888;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+/* 4. THE WHISPER BOX (Input) */
+textarea {
+    width: 90%;
+    height: 100px;
+    background: #0d0d0d;
+    border: 2px solid #333;
+    color: #e0d8c3;
+    font-family: 'IM Fell English', serif;
+    font-size: 1.2rem;
+    padding: 1rem;
+    border-radius: 4px;
+    outline: none;
+    resize: none;
+    box-shadow: inset 0 0 10px #000;
+}
+
+textarea:focus {
+    border-color: #555;
+    background: #151515;
+}
+
+/* 5. THE SEAL OF FATE (Button) */
+.seal-button {
+    background: linear-gradient(180deg, #8a0303, #5a0000); /* Ruby Red */
+    color: #ffcccc;
+    border: 2px solid #3a0000;
+    padding: 1rem 2rem;
+    font-family: 'UnifrakturMaguntia', cursive;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    border-radius: 50px; /* Oval seal shape */
+    box-shadow: 0 4px 15px rgba(138, 3, 3, 0.4);
+    transition: all 0.3s ease;
+}
+
+.seal-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 50, 50, 0.6); /* Glow brighter */
+    text-shadow: 0 0 8px white;
+}
+
+.seal-button:active {
+    transform: scale(0.95);
+}
+
+/* 6. THE REVEREND'S VOICE (Result) */
+.reverend-voice {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #444;
+    color: #c5a059; /* Gold text */
+    font-size: 1.3rem;
+    line-height: 1.6;
+    min-height: 50px;
+    opacity: 0; /* Hidden initially */
+    transition: opacity 1s ease-in;
+}
+
+/* Navigation Link */
+.nav-link {
+    display: block;
+    margin-top: 2rem;
+    color: #555;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+.nav-link:hover { color: #888; }
+
+/* 7. THE FLICKER ANIMATION KEYFRAMES */
+@keyframes flicker {
+    0% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.1); }
+    20% { box-shadow: 0 0 30px rgba(255, 140, 0, 0.2); }
+    40% { box-shadow: 0 0 25px rgba(255, 100, 0, 0.15); }
+    60% { box-shadow: 0 0 35px rgba(255, 160, 0, 0.25); }
+    80% { box-shadow: 0 0 22px rgba(255, 120, 0, 0.1); }
+    100% { box-shadow: 0 0 40px rgba(255, 150, 0, 0.3); }
+}
