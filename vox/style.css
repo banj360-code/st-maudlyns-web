@@ -27,12 +27,12 @@ body {
     z-index: 5;
 }
 
-/* 3. THE CLOUD BISHOP (Automaton) */
+/* --- THE AUTOMATON BISHOP (Perfect Stack Logic) --- */
 #bishop-container {
     position: absolute;
     top: 5vh;   
     right: 5vw; 
-    width: 280px; 
+    width: 350px; /* Adjust this to make the Bishop larger or smaller on screen */
     z-index: 100;
     pointer-events: none;
     animation: bob 4s infinite ease-in-out, sway 8s infinite ease-in-out;
@@ -47,12 +47,25 @@ body {
 
 #bishop-jaw {
     position: absolute;
-    /* ADJUST THESE manually to 'pin' your GIMP-cropped jaw to the face */
-    top: 62%;  
-    left: 31%; 
-    width: 38%; 
-    transform-origin: top center; 
+    top: 0;   /* Matches the top of the body canvas */
+    left: 0;  /* Matches the left of the body canvas */
+    width: 100%; /* Spans the full width of the body canvas */
+    
+    /* THE HINGE: Adjust these % to find the point where his mouth rotates */
+    /* On a 960x1104 canvas, the mouth is likely around 60-70% down */
+    transform-origin: 50% 65%; 
+    
     z-index: 101;
+}
+
+/* The talking flap triggered by the typewriter script */
+.talking #bishop-jaw {
+    animation: flap 0.12s infinite alternate ease-in-out;
+}
+
+@keyframes flap {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(8deg) translateY(2px); }
 }
 
 /* Animations */
