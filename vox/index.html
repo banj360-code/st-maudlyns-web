@@ -34,49 +34,54 @@
 
     <script>
         async function submitConfession() {
-            const inputField = document.getElementById("confessionInput");
-            const resultDiv = document.getElementById("result");
-            const confessionText = inputField.value;
+    const inputField = document.getElementById("confessionInput");
+    const resultDiv = document.getElementById("result");
+    const bishop = document.getElementById("bishop-container"); // NEW: Get the bishop
+    const confessionText = inputField.value;
 
-            if (!confessionText) return;
+    if (!confessionText) return;
 
-            // Show loading state
-            resultDiv.style.opacity = "1";
-            resultDiv.innerText = "The Reverend is contemplating your soul...";
-            
-            try {
-                const response = await fetch('/.netlify/functions/the-reverend', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ confession: confessionText })
-                });
+    // 1. SUMMON THE BISHOP
+    bishop.classList.add("materialize");
 
-                const data = await response.json();
+    // 2. Show loading state
+    resultDiv.style.opacity = "1";
+    resultDiv.innerText = "The Reverend is contemplating your soul...";
+    
+    try {
+        const response = await fetch('/.netlify/functions/the-reverend', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ confession: confessionText })
+        });
 
-                if (response.ok) {
-                    resultDiv.innerText = ""; // Clear for typewriter
-                    typeWriter(data.absolution, 0);
-                } else {
-                    resultDiv.innerText = "The Reverend is silent. (Error: " + data.absolution + ")";
-                }
-            } catch (error) {
-                resultDiv.innerText = "A darkness has fallen over the line. Try again.";
-                console.error("Error:", error);
-            }
+        const data = await response.json();
+
+        if (response.ok) {
+            resultDiv.innerText = ""; 
+            typeWriter(data.absolution, 0);
+        } else {
+            resultDiv.innerText = "The Reverend is silent.";
         }
+    } catch (error) {
+        resultDiv.innerText = "A darkness has fallen over the line.";
+    }
+}
 
-        function typeWriter(text, i) {
-            const resultDiv = document.getElementById("result");
-            const bishop = document.getElementById("bishop-container");
+ function typeWriter(text, i) {
+    const resultDiv = document.getElementById("result");
+    const bishop = document.getElementById("bishop-container");
 
-            if (i < text.length) {
-                resultDiv.innerHTML += text.charAt(i);
-                bishop.classList.add("talking"); // Start Jaw Flap
-                setTimeout(() => typeWriter(text, i + 1), 40);
-            } else {
-                bishop.classList.remove("talking"); // Stop Jaw Flap
-            }
-        }
+    if (i < text.length) {
+        resultDiv.innerHTML += text.charAt(i);
+        bishop.classList.add("talking"); 
+        
+        // Slowed down the text delivery to match the jaw's dignity
+        setTimeout(() => typeWriter(text, i + 1), 70);
+    } else {
+        bishop.classList.remove("talking"); 
+    }
+}
     </script>
 
 </body>

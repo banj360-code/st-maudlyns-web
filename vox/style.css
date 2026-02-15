@@ -25,18 +25,32 @@ body {
     box-shadow: 0 0 30px rgba(255, 165, 0, 0.2);
     animation: flicker 4s infinite alternate;
     z-index: 5;
+    position: relative;
 }
 
-/* --- THE AUTOMATON BISHOP (Perfect Stack Logic) --- */
+/* 3. THE AUTOMATON BISHOP (Perfect Stack) */
 #bishop-container {
     position: absolute;
     top: 5vh;   
     right: 5vw; 
-    width: 350px; /* Adjust this to make the Bishop larger or smaller on screen */
+    width: 350px; /* Adjust this to scale the Bishop's size */
     z-index: 100;
     pointer-events: none;
+    
+    /* MATERIALIZATION LOGIC: Starts invisible and lowered */
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
+    transition: opacity 2s ease-in-out, transform 2s ease-out;
+    
+    /* Perpetual mechanical drifting */
     animation: bob 4s infinite ease-in-out, sway 8s infinite ease-in-out;
     transform-style: preserve-3d;
+}
+
+/* Class added by JavaScript on button click */
+#bishop-container.materialize {
+    opacity: 1;
+    transform: scale(1) translateY(0);
 }
 
 #bishop-body {
@@ -47,46 +61,19 @@ body {
 
 #bishop-jaw {
     position: absolute;
-    top: 0;   /* Matches the top of the body canvas */
-    left: 0;  /* Matches the left of the body canvas */
-    width: 100%; /* Spans the full width of the body canvas */
+    top: 0;   /* Aligned to top of 960x1104 canvas */
+    left: 0;  /* Aligned to left of 960x1104 canvas */
+    width: 100%;
     
-    /* THE HINGE: Adjust these % to find the point where his mouth rotates */
-    /* On a 960x1104 canvas, the mouth is likely around 60-70% down */
+    /* THE HINGE: 50% centers it horizontally to prevent right-drift.
+       65% is the vertical point of rotation. */
     transform-origin: 50% 65%; 
-    
     z-index: 101;
 }
 
-/* The talking flap triggered by the typewriter script */
+/* Talking animation triggered by typewriter script */
 .talking #bishop-jaw {
-    animation: flap 0.12s infinite alternate ease-in-out;
-}
-
-@keyframes flap {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(8deg) translateY(2px); }
-}
-
-/* Animations */
-@keyframes bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-35px); }
-}
-
-@keyframes sway {
-    0%, 100% { right: 5vw; }
-    50% { right: 10vw; }
-}
-
-/* The talking flap */
-.talking #bishop-jaw {
-    animation: flap 0.12s infinite alternate ease-in-out;
-}
-
-@keyframes flap {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(10deg) translateY(2px); }
+    animation: flap 0.25s infinite alternate ease-in-out;
 }
 
 /* 4. TYPOGRAPHY & INTERFACE */
@@ -157,6 +144,23 @@ textarea {
     margin-top: 2rem;
     color: #555;
     text-decoration: none;
+    font-size: 0.9rem;
+}
+
+/* 5. ANIMATIONS */
+@keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-35px); }
+}
+
+@keyframes sway {
+    0%, 100% { right: 5vw; }
+    50% { right: 8vw; }
+}
+
+@keyframes flap {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(5deg) translateY(4px); } /* Vertical movement only */
 }
 
 @keyframes flicker {
