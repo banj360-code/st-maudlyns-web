@@ -3,195 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Vox - St. Maudlyns</title>
-    <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Playfair+Display+SC:wght@700&display=swap" rel="stylesheet">
-    <style>
-        /* --- GLOBAL & THEME --- */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background: #0f0a08;
-            color: #fdfaf0;
-            font-family: 'Old Standard TT', serif;
-            overflow: hidden;
-        }
-
-        /* --- THE BOOTH (Gothic Arch) --- */
-        .booth-container {
-            position: relative;
-            width: 90%;
-            max-width: 600px;
-            height: 80vh;
-            margin: 5vh auto;
-            background: #1a0f0d;
-            border: 4px solid #3d2b1f;
-            border-radius: 300px 300px 20px 20px; /* The Gothic Arch */
-            box-shadow: inset 0 0 50px #000, 0 0 30px rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            z-index: 5;
-        }
-
-        .candle-flicker {
-            position: absolute;
-            top: 20px;
-            width: 100%;
-            height: 100%;
-            box-shadow: inset 0 0 100px rgba(255, 140, 0, 0.05);
-            pointer-events: none;
-            animation: flicker 4s infinite alternate;
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
-        }
-
-        /* --- THE CLOUD BISHOP --- */
-        #bishop-container {
-            position: absolute;
-            top: -40px;
-            right: -20px;
-            width: 150px;
-            animation: bob 3s infinite ease-in-out;
-            z-index: 20;
-        }
-
-        #bishop-body { width: 100%; display: block; }
-        
-        #bishop-jaw {
-            position: absolute;
-            top: 65%; /* Adjust based on your image */
-            left: 32%; /* Adjust based on your image */
-            width: 35%;
-            transform-origin: top center;
-        }
-
-        @keyframes bob {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        .talking #bishop-jaw {
-            animation: flap 0.15s infinite;
-        }
-
-        @keyframes flap {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(8deg) translateY(2px); }
-        }
-
-        /* --- THE HEAVENLY CHORUS (Loading Screen) --- */
-        #loading-screen {
-            position: absolute;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('../images/angels.png') no-repeat bottom center;
-            background-size: contain;
-            transition: bottom 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 30;
-            pointer-events: none;
-        }
-
-        #loading-screen.active { bottom: 0; }
-
-        /* --- INTERFACE ELEMENTS --- */
-        h2 { font-family: 'Playfair+Display+SC', serif; color: #8b0000; }
-        
-        textarea {
-            width: 100%;
-            height: 120px;
-            background: #000;
-            border: 1px solid #3d2b1f;
-            color: #fdfaf0;
-            font-family: inherit;
-            padding: 15px;
-            resize: none;
-            font-size: 1.1rem;
-        }
-
-        button {
-            margin-top: 20px;
-            background: #8b0000;
-            color: white;
-            border: none;
-            padding: 10px 30px;
-            font-family: 'Playfair Display SC', serif;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-
-        #verdict {
-            margin-top: 30px;
-            font-style: italic;
-            line-height: 1.6;
-            color: #c0b090;
-            text-align: center;
-        }
-    </style>
+    <title>St. Maudlyn's Confessional</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display+SC:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="booth-container" id="booth">
-        <div class="candle-flicker"></div>
+    <div id="bishop-container">
+        <img src="../images/bishop-body.png" id="bishop-body" alt="The Bishop">
+        <img src="../images/bishop-jaw.png" id="bishop-jaw" alt="Jaw">
+    </div>
+
+    <div class="confessional-booth">
+        <h1 class="gothic-title">The Confessional</h1>
+        <p class="quote">"Speak plainly, for the ink of the soul never dries."</p>
+
+        <textarea id="confessionInput" placeholder="Whisper your transgression here..."></textarea>
         
-        <div id="bishop-container">
-            <img src="../images/bishop-body.png" id="bishop-body" alt="The Bishop">
-            <img src="../images/bishop-jaw.png" id="bishop-jaw" alt="Jaw">
-        </div>
+        <button onclick="submitConfession()" class="seal-button">
+            † SEEK ABSOLUTION †
+        </button>
 
-        <h2>Confess Your Sins</h2>
-        <textarea id="confession-input" placeholder="Speak, child... if you must."></textarea>
-        <button onclick="submitConfession()">Seek Absolution</button>
-
-        <div id="verdict"></div>
-
-        <div id="loading-screen"></div>
+        <div id="result" class="reverend-voice"></div>
+        
+        <a href="/" class="nav-link">[ Return to the Nave ]</a>
     </div>
 
     <script>
         async function submitConfession() {
-            const input = document.getElementById("confession-input").value;
-            const verdictDiv = document.getElementById("verdict");
-            const loading = document.getElementById("loading-screen");
-            const bishop = document.getElementById("bishop-container");
+            const inputField = document.getElementById("confessionInput");
+            const resultDiv = document.getElementById("result");
+            const confessionText = inputField.value;
 
-            if (!input) return;
+            if (!confessionText) return;
 
-            // Trigger Angels
-            loading.classList.add("active");
-            verdictDiv.innerHTML = "";
-
+            // Show loading state
+            resultDiv.style.opacity = "1";
+            resultDiv.innerText = "The Reverend is contemplating your soul...";
+            
             try {
-                const response = await fetch("/.netlify/functions/the-reverend", {
-                    method: "POST",
-                    body: JSON.stringify({ confession: input })
+                const response = await fetch('/.netlify/functions/the-reverend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ confession: confessionText })
                 });
+
                 const data = await response.json();
 
-                // Clear Angels
-                loading.classList.remove("active");
-
-                // Typewriter effect synced with Jaw
-                typeWriter(data.absolution, 0);
+                if (response.ok) {
+                    resultDiv.innerText = ""; // Clear for typewriter
+                    typeWriter(data.absolution, 0);
+                } else {
+                    resultDiv.innerText = "The Reverend is silent. (Error: " + data.absolution + ")";
+                }
             } catch (error) {
-                loading.classList.remove("active");
-                verdictDiv.innerHTML = "The Reverend is indisposed. Try again later.";
+                resultDiv.innerText = "A darkness has fallen over the line. Try again.";
+                console.error("Error:", error);
             }
         }
 
         function typeWriter(text, i) {
-            const verdictDiv = document.getElementById("verdict");
+            const resultDiv = document.getElementById("result");
             const bishop = document.getElementById("bishop-container");
 
             if (i < text.length) {
-                verdictDiv.innerHTML += text.charAt(i);
+                resultDiv.innerHTML += text.charAt(i);
                 bishop.classList.add("talking"); // Start Jaw Flap
                 setTimeout(() => typeWriter(text, i + 1), 40);
             } else {
@@ -199,5 +78,6 @@
             }
         }
     </script>
+
 </body>
 </html>

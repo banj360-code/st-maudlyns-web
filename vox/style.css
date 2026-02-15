@@ -2,61 +2,87 @@
 body {
     background-color: #050505;
     background-image: radial-gradient(circle at center, #1a1a1d 0%, #000000 100%);
-    color: #e0d8c3;
-    
-    /* FIX FOR MOBILE SCROLLING */
-    min-height: 100vh;
-    height: auto;
-    overflow-y: auto;
-    
+    color: #dcdcdc;
+    font-family: 'EB Garamond', serif;
+    height: 100vh;
     margin: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'EB Garamond', serif; 
-    padding: 20px;
+    overflow: hidden;
 }
 
 /* 2. THE CONFESSIONAL BOOTH (The Container) */
 .confessional-booth {
-    background: rgba(20, 10, 10, 0.85); /* Dark, semi-transparent glass */
-    border: 6px solid #2a2a2a; 
-    border-top: 6px solid #4a4a4a;
-    padding: 2rem;
+    background: rgba(20, 10, 10, 0.8);
+    border: 8px solid #2a2a2a;
+    border-top: 8px solid #4a4a4a;
+    padding: 3rem;
     width: 100%;
     max-width: 500px;
     text-align: center;
-    
-    /* The Gothic Arch Shape */
     border-radius: 200px 200px 10px 10px; 
-    
-    /* THE GENTLE VIGIL ANIMATION */
-    /* 4s = 4 seconds (Slow and breathing) */
-    animation: gentle-flicker 4s infinite alternate ease-in-out;
-}
-    
-    /* The Gothic Arch Shape */
-    border-radius: 200px 200px 10px 10px; 
-    
-    /* THE HEAVY DUTY ANIMATION */
-    -webkit-box-shadow: 0 0 30px rgba(255, 165, 0, 0.2);
-    -moz-box-shadow: 0 0 30px rgba(255, 165, 0, 0.2);
     box-shadow: 0 0 30px rgba(255, 165, 0, 0.2);
-    
-    -webkit-animation: flicker 4s infinite alternate;
-    -moz-animation: flicker 4s infinite alternate;
     animation: flicker 4s infinite alternate;
+    z-index: 5;
 }
 
-/* 3. THE TYPOGRAPHY */
+/* 3. THE CLOUD BISHOP (Automaton) */
+#bishop-container {
+    position: absolute;
+    top: 5vh;   
+    right: 5vw; 
+    width: 280px; 
+    z-index: 100;
+    pointer-events: none;
+    animation: bob 4s infinite ease-in-out, sway 8s infinite ease-in-out;
+    transform-style: preserve-3d;
+}
+
+#bishop-body {
+    width: 100%;
+    display: block;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+#bishop-jaw {
+    position: absolute;
+    /* ADJUST THESE manually to 'pin' your GIMP-cropped jaw to the face */
+    top: 62%;  
+    left: 31%; 
+    width: 38%; 
+    transform-origin: top center; 
+    z-index: 101;
+}
+
+/* Animations */
+@keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-35px); }
+}
+
+@keyframes sway {
+    0%, 100% { right: 5vw; }
+    50% { right: 10vw; }
+}
+
+/* The talking flap */
+.talking #bishop-jaw {
+    animation: flap 0.12s infinite alternate ease-in-out;
+}
+
+@keyframes flap {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(10deg) translateY(2px); }
+}
+
+/* 4. TYPOGRAPHY & INTERFACE */
 .gothic-title {
-    font-family: 'Playfair Display SC', serif; 
-    font-size: 2.8rem;
-    margin-top: 1rem;
-    color: #c5a059;
+    font-family: 'Playfair Display SC', serif;
+    font-size: 3rem;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 3px;
+    margin-top: 0;
 }
 
 .quote {
@@ -66,15 +92,14 @@ body {
     font-size: 1.1rem;
 }
 
-/* 4. THE WHISPER BOX (Input) */
 textarea {
     width: 90%;
     height: 100px;
     background: #0d0d0d;
-    border: 1px solid #444;
+    border: 2px solid #333;
     color: #e0d8c3;
-    font-family: 'EB Garamond', serif;
-    font-size: 1.3rem;
+    font-family: inherit;
+    font-size: 1.2rem;
     padding: 1rem;
     border-radius: 4px;
     outline: none;
@@ -82,17 +107,11 @@ textarea {
     box-shadow: inset 0 0 10px #000;
 }
 
-textarea:focus {
-    border-color: #666;
-    background: #151515;
-}
-
-/* 5. THE SEAL OF FATE (Button) */
 .seal-button {
     background: linear-gradient(180deg, #8a0303, #5a0000);
     color: #ffcccc;
     border: 2px solid #3a0000;
-    padding: 0.8rem 2rem;
+    padding: 1rem 2rem;
     font-family: 'Playfair Display SC', serif;
     font-size: 1.2rem;
     cursor: pointer;
@@ -107,11 +126,6 @@ textarea:focus {
     box-shadow: 0 0 20px rgba(255, 50, 50, 0.6);
 }
 
-.seal-button:active {
-    transform: scale(0.95);
-}
-
-/* 6. THE REVEREND'S VOICE (Result) */
 .reverend-voice {
     margin-top: 2rem;
     padding: 1rem;
@@ -120,43 +134,19 @@ textarea:focus {
     color: #c5a059;
     font-size: 1.3rem;
     line-height: 1.6;
-    opacity: 0; 
+    min-height: 50px;
+    opacity: 0;
     transition: opacity 1s ease-in;
 }
 
-/* Navigation Link */
 .nav-link {
     display: block;
     margin-top: 2rem;
     color: #555;
     text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.3s;
 }
-.nav-link:hover { color: #888; }
 
-/* 7. THE REALISTIC CANDLE ANIMATION */
-@keyframes gentle-flicker {
-    0% {
-        /* Dim, warm light */
-        box-shadow: 0 0 25px rgba(255, 140, 0, 0.1); 
-        border-color: #2a2a2a;
-    }
-    25% {
-        /* A slight flare */
-        box-shadow: 0 0 32px rgba(255, 160, 0, 0.2); 
-    }
-    50% {
-        /* Dimming again (the wind blows) */
-        box-shadow: 0 0 22px rgba(255, 120, 0, 0.15); 
-    }
-    75% {
-        /* Brightest point */
-        box-shadow: 0 0 40px rgba(255, 180, 0, 0.3); 
-        border-color: #3a2a2a; /* Frame glows slightly */
-    }
-    100% {
-        /* Back to normal */
-        box-shadow: 0 0 28px rgba(255, 150, 0, 0.2); 
-    }
+@keyframes flicker {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.1); }
+    50% { box-shadow: 0 0 40px rgba(255, 150, 0, 0.3); }
 }
