@@ -1,4 +1,4 @@
-/* 1. THE ATMOSPHERE (Background) */
+/* 1. THE ATMOSPHERE */
 body {
     background-color: #050505;
     background-image: radial-gradient(circle at center, #1a1a1d 0%, #000000 100%);
@@ -12,7 +12,7 @@ body {
     overflow: hidden;
 }
 
-/* 2. THE CONFESSIONAL BOOTH (The Container) */
+/* 2. THE CONFESSIONAL BOOTH */
 .confessional-booth {
     background: rgba(20, 10, 10, 0.8);
     border: 8px solid #2a2a2a;
@@ -28,7 +28,7 @@ body {
     position: relative;
 }
 
-/* 3. THE AUTOMATON BISHOP (Perfect Stack) */
+/* 3. THE AUTOMATON BISHOP (Perfect Stack Strategy) */
 #bishop-container {
     position: absolute;
     top: 5vh;   
@@ -37,17 +37,16 @@ body {
     z-index: 100;
     pointer-events: none;
     
-    /* MATERIALIZATION LOGIC */
+    /* Starts invisible until materialized */
     opacity: 0;
     transform: scale(0.8) translateY(30px);
     transition: opacity 2s ease-in-out, transform 2s ease-out;
     
-    /* Animations: 'bob' is vertical, 'sway' is horizontal drift */
-    /* If you hate the horizontal drift, remove ', sway 8s infinite ease-in-out' below */
-    animation: bob 4s infinite ease-in-out, sway 8s infinite ease-in-out;
-    transform-style: preserve-3d;
+    /* Continuous floating effect */
+    animation: bob 4s infinite ease-in-out;
 }
 
+/* Triggered by JavaScript materialize call */
 #bishop-container.materialize {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -67,20 +66,19 @@ body {
     z-index: 101;
 }
 
-/* THE TALKING FLAP: Now set to PURE vertical movement */
+/* THE TALKING FLAP: Pure vertical movement to stop side-to-side sway */
 .talking #bishop-jaw {
-    /* Slowed to 0.3s for a heavy, mechanical feel */
     animation: flap 0.3s infinite alternate ease-in-out;
 }
 
 @keyframes flap {
-    0% { 
-        transform: translateY(0); 
-    }
-    100% { 
-        /* Adjust the '8px' to make the mouth open wider or narrower */
-        transform: translateY(8px); 
-    }
+    0% { transform: translateY(0); }
+    100% { transform: translateY(12px); } /* Only vertical movement */
+}
+
+@keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-25px); }
 }
 
 /* 4. TYPOGRAPHY & INTERFACE */
@@ -146,17 +144,6 @@ textarea {
     margin-top: 2rem;
     color: #555;
     text-decoration: none;
-}
-
-/* 5. MOTION ANIMATIONS */
-@keyframes bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-25px); }
-}
-
-@keyframes sway {
-    0%, 100% { right: 5vw; }
-    50% { right: 7vw; } /* Very subtle horizontal drift */
 }
 
 @keyframes flicker {

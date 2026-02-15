@@ -33,78 +33,72 @@
     </div>
 
     <script>
-    // 1. THE VOICE ENGINE
-    function speakVerdict(text) {
-        // Cancel any lingering spirits (previous speech)
-        window.speechSynthesis.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(text);
-        
-        // Setting the tone for Bertrand
-        utterance.lang = 'en-GB'; 
-        utterance.pitch = 0.6; // Deep and stern
-        utterance.rate = 0.85; // Measured and world-weary
-        
-        window.speechSynthesis.speak(utterance);
-    }
-
-    async function submitConfession() {
-        const inputField = document.getElementById("confessionInput");
-        const resultDiv = document.getElementById("result");
-        const bishop = document.getElementById("bishop-container"); 
-        const confessionText = inputField.value;
-
-        if (!confessionText) return;
-
-        // Materialize the Bishop
-        bishop.classList.add("materialize");
-
-        resultDiv.style.opacity = "1";
-        resultDiv.innerText = "The Reverend is contemplating your soul...";
-        
-        try {
-            const response = await fetch('/.netlify/functions/the-reverend', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ confession: confessionText })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                resultDiv.innerText = ""; 
-                // Call the voice and the typewriter
-                speakVerdict(data.absolution);
-                typeWriter(data.absolution, 0);
-            } else {
-                resultDiv.innerText = "The Reverend is silent.";
-            }
-        } catch (error) {
-            resultDiv.innerText = "A darkness has fallen over the line.";
+        // 1. THE REVEREND'S VOICE ENGINE
+        function speakVerdict(text) {
+            window.speechSynthesis.cancel(); // Clear previous speech
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-GB'; // British English
+            utterance.pitch = 0.6;    // Deep and stern
+            utterance.rate = 0.85;   // Measured and world-weary
+            window.speechSynthesis.speak(utterance);
         }
-    }
 
-    function typeWriter(text, i) {
-        const resultDiv = document.getElementById("result");
-        const bishop = document.getElementById("bishop-container");
+        async function submitConfession() {
+            const inputField = document.getElementById("confessionInput");
+            const resultDiv = document.getElementById("result");
+            const bishop = document.getElementById("bishop-container"); 
+            const confessionText = inputField.value;
 
-        if (i < text.length) {
-            resultDiv.innerHTML += text.charAt(i);
+            if (!confessionText) return;
+
+            // Materialize the Bishop
+            bishop.classList.add("materialize");
+
+            resultDiv.style.opacity = "1";
+            resultDiv.innerText = "The Reverend is contemplating your soul...";
             
-            // The jaw flaps as long as the browser is speaking
-            if (window.speechSynthesis.speaking) {
-                bishop.classList.add("talking");
-            } else {
-                bishop.classList.remove("talking");
-            }
+            try {
+                const response = await fetch('/.netlify/functions/the-reverend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ confession: confessionText })
+                });
 
-            setTimeout(() => typeWriter(text, i + 1), 70);
-        } else {
-            // Ensure jaw stops when text is finished
-            setTimeout(() => bishop.classList.remove("talking"), 500);
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerText = ""; 
+                    speakVerdict(data.absolution);
+                    typeWriter(data.absolution, 0);
+                } else {
+                    resultDiv.innerText = "The Reverend is silent.";
+                }
+            } catch (error) {
+                resultDiv.innerText = "A darkness has fallen over the line.";
+            }
         }
-    }
-</script>
+
+        function typeWriter(text, i) {
+            const resultDiv = document.getElementById("result");
+            const bishop = document.getElementById("bishop-container");
+
+            if (i < text.length) {
+                resultDiv.innerHTML += text.charAt(i);
+                
+                // Sync jaw flap to the ACTUAL speech engine
+                if (window.speechSynthesis.speaking) {
+                    bishop.classList.add("talking");
+                } else {
+                    bishop.classList.remove("talking");
+                }
+
+                setTimeout(() => typeWriter(text, i + 1), 70);
+            } else {
+                // Stop flapping when the text and speech are finished
+                setTimeout(() => bishop.classList.remove("talking"), 500);
+            }
+        }
+    </script>
 
 </body>
 </html>
