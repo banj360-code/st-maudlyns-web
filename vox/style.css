@@ -33,21 +33,21 @@ body {
     position: absolute;
     top: 5vh;   
     right: 5vw; 
-    width: 350px; /* Adjust this to scale the Bishop's size */
+    width: 350px; 
     z-index: 100;
     pointer-events: none;
     
-    /* MATERIALIZATION LOGIC: Starts invisible and lowered */
+    /* MATERIALIZATION LOGIC */
     opacity: 0;
     transform: scale(0.8) translateY(30px);
     transition: opacity 2s ease-in-out, transform 2s ease-out;
     
-    /* Perpetual mechanical drifting */
+    /* Animations: 'bob' is vertical, 'sway' is horizontal drift */
+    /* If you hate the horizontal drift, remove ', sway 8s infinite ease-in-out' below */
     animation: bob 4s infinite ease-in-out, sway 8s infinite ease-in-out;
     transform-style: preserve-3d;
 }
 
-/* Class added by JavaScript on button click */
 #bishop-container.materialize {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -64,16 +64,23 @@ body {
     top: 0;   /* Aligned to top of 960x1104 canvas */
     left: 0;  /* Aligned to left of 960x1104 canvas */
     width: 100%;
-    
-    /* THE HINGE: 50% centers it horizontally to prevent right-drift.
-       65% is the vertical point of rotation. */
-    transform-origin: 50% 65%; 
     z-index: 101;
 }
 
-/* Talking animation triggered by typewriter script */
+/* THE TALKING FLAP: Now set to PURE vertical movement */
 .talking #bishop-jaw {
-    animation: flap 0.25s infinite alternate ease-in-out;
+    /* Slowed to 0.3s for a heavy, mechanical feel */
+    animation: flap 0.3s infinite alternate ease-in-out;
+}
+
+@keyframes flap {
+    0% { 
+        transform: translateY(0); 
+    }
+    100% { 
+        /* Adjust the '8px' to make the mouth open wider or narrower */
+        transform: translateY(8px); 
+    }
 }
 
 /* 4. TYPOGRAPHY & INTERFACE */
@@ -121,11 +128,6 @@ textarea {
     transition: all 0.3s ease;
 }
 
-.seal-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(255, 50, 50, 0.6);
-}
-
 .reverend-voice {
     margin-top: 2rem;
     padding: 1rem;
@@ -144,23 +146,17 @@ textarea {
     margin-top: 2rem;
     color: #555;
     text-decoration: none;
-    font-size: 0.9rem;
 }
 
-/* 5. ANIMATIONS */
+/* 5. MOTION ANIMATIONS */
 @keyframes bob {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-35px); }
+    50% { transform: translateY(-25px); }
 }
 
 @keyframes sway {
     0%, 100% { right: 5vw; }
-    50% { right: 8vw; }
-}
-
-@keyframes flap {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(5deg) translateY(4px); } /* Vertical movement only */
+    50% { right: 7vw; } /* Very subtle horizontal drift */
 }
 
 @keyframes flicker {

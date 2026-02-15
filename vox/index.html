@@ -33,56 +33,78 @@
     </div>
 
     <script>
-        async function submitConfession() {
-    const inputField = document.getElementById("confessionInput");
-    const resultDiv = document.getElementById("result");
-    const bishop = document.getElementById("bishop-container"); // NEW: Get the bishop
-    const confessionText = inputField.value;
+    // 1. THE VOICE ENGINE
+    function speakVerdict(text) {
+        // Cancel any lingering spirits (previous speech)
+        window.speechSynthesis.cancel();
 
-    if (!confessionText) return;
-
-    // 1. SUMMON THE BISHOP
-    bishop.classList.add("materialize");
-
-    // 2. Show loading state
-    resultDiv.style.opacity = "1";
-    resultDiv.innerText = "The Reverend is contemplating your soul...";
-    
-    try {
-        const response = await fetch('/.netlify/functions/the-reverend', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ confession: confessionText })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            resultDiv.innerText = ""; 
-            typeWriter(data.absolution, 0);
-        } else {
-            resultDiv.innerText = "The Reverend is silent.";
-        }
-    } catch (error) {
-        resultDiv.innerText = "A darkness has fallen over the line.";
-    }
-}
-
- function typeWriter(text, i) {
-    const resultDiv = document.getElementById("result");
-    const bishop = document.getElementById("bishop-container");
-
-    if (i < text.length) {
-        resultDiv.innerHTML += text.charAt(i);
-        bishop.classList.add("talking"); 
+        const utterance = new SpeechSynthesisUtterance(text);
         
-        // Slowed down the text delivery to match the jaw's dignity
-        setTimeout(() => typeWriter(text, i + 1), 70);
-    } else {
-        bishop.classList.remove("talking"); 
+        // Setting the tone for Bertrand
+        utterance.lang = 'en-GB'; 
+        utterance.pitch = 0.6; // Deep and stern
+        utterance.rate = 0.85; // Measured and world-weary
+        
+        window.speechSynthesis.speak(utterance);
     }
-}
-    </script>
+
+    async function submitConfession() {
+        const inputField = document.getElementById("confessionInput");
+        const resultDiv = document.getElementById("result");
+        const bishop = document.getElementById("bishop-container"); 
+        const confessionText = inputField.value;
+
+        if (!confessionText) return;
+
+        // Materialize the Bishop
+        bishop.classList.add("materialize");
+
+        resultDiv.style.opacity = "1";
+        resultDiv.innerText = "The Reverend is contemplating your soul...";
+        
+        try {
+            const response = await fetch('/.netlify/functions/the-reverend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ confession: confessionText })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                resultDiv.innerText = ""; 
+                // Call the voice and the typewriter
+                speakVerdict(data.absolution);
+                typeWriter(data.absolution, 0);
+            } else {
+                resultDiv.innerText = "The Reverend is silent.";
+            }
+        } catch (error) {
+            resultDiv.innerText = "A darkness has fallen over the line.";
+        }
+    }
+
+    function typeWriter(text, i) {
+        const resultDiv = document.getElementById("result");
+        const bishop = document.getElementById("bishop-container");
+
+        if (i < text.length) {
+            resultDiv.innerHTML += text.charAt(i);
+            
+            // The jaw flaps as long as the browser is speaking
+            if (window.speechSynthesis.speaking) {
+                bishop.classList.add("talking");
+            } else {
+                bishop.classList.remove("talking");
+            }
+
+            setTimeout(() => typeWriter(text, i + 1), 70);
+        } else {
+            // Ensure jaw stops when text is finished
+            setTimeout(() => bishop.classList.remove("talking"), 500);
+        }
+    }
+</script>
 
 </body>
 </html>
