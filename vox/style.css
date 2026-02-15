@@ -1,152 +1,52 @@
-/* 1. THE ATMOSPHERE */
+/* 1. THE ATMOSPHERE: A deep, flickering confessional space */
 body {
-    background-color: #050505;
-    background-image: radial-gradient(circle at center, #1a1a1d 0%, #000000 100%);
-    color: #dcdcdc;
-    font-family: 'EB Garamond', serif;
-    height: 100vh;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    background: radial-gradient(circle at center, #1a1a1d 0%, #000000 100%);
+    color: #dcdcdc; font-family: 'EB Garamond', serif;
+    height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; overflow: hidden;
 }
 
-/* 2. THE CONFESSIONAL BOOTH */
+/* 2. THE HOLY SMOKE: A ghostly overlay that appears with the Bishop */
+#holy-smoke {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(0,0,0,0) 70%);
+    mix-blend-mode: screen; pointer-events: none; z-index: 40; opacity: 0; filter: blur(25px);
+    transition: opacity 4s ease-in-out;
+}
+#holy-smoke.active { opacity: 0.8; animation: smoke-drift 15s infinite alternate linear; }
+
+@keyframes smoke-drift { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
+
+/* 3. THE BOOTH: The Gothic Arch container */
 .confessional-booth {
-    background: rgba(20, 10, 10, 0.8);
-    border: 8px solid #2a2a2a;
-    border-top: 8px solid #4a4a4a;
-    padding: 3rem;
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
-    border-radius: 200px 200px 10px 10px; 
-    box-shadow: 0 0 30px rgba(255, 165, 0, 0.2);
+    background: rgba(20, 10, 10, 0.8); border: 8px solid #2a2a2a; padding: 3rem; width: 100%; max-width: 500px;
+    text-align: center; border-radius: 200px 200px 10px 10px; z-index: 5; position: relative;
     animation: flicker 4s infinite alternate;
-    z-index: 5;
-    position: relative;
 }
 
-/* 3. THE AUTOMATON BISHOP (Perfect Stack Strategy) */
+/* 4. THE BISHOP: Handles the materialization and bobbing */
 #bishop-container {
-    position: absolute;
-    top: 5vh;   
-    right: 5vw; 
-    width: 350px; 
-    z-index: 100;
-    pointer-events: none;
-    
-    /* Starts invisible until materialized */
-    opacity: 0;
-    transform: scale(0.8) translateY(30px);
-    transition: opacity 2s ease-in-out, transform 2s ease-out;
-    
-    /* Continuous floating effect */
+    position: absolute; top: 5vh; right: 5vw; width: 350px; z-index: 100;
+    pointer-events: none; opacity: 0; transform: scale(0.8) translateY(40px);
+    transition: opacity 2s ease-in-out, transform 2.5s ease-out;
     animation: bob 4s infinite ease-in-out;
 }
+#bishop-container.materialize { opacity: 1; transform: scale(1) translateY(0); }
 
-/* Triggered by JavaScript materialize call */
-#bishop-container.materialize {
-    opacity: 1;
-    transform: scale(1) translateY(0);
+#bishop-body { width: 100%; display: block; filter: drop-shadow(0 10px 20px #000); }
+
+/* The jaw is moved PURELY by JavaScript translateY now */
+#bishop-jaw { 
+    position: absolute; top: 0; left: 0; width: 100%; z-index: 101; 
+    transition: transform 0.05s linear; /* Smooths the micro-vibrations of speech */
 }
 
-#bishop-body {
-    width: 100%;
-    display: block;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-}
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
 
-#bishop-jaw {
-    position: absolute;
-    top: 0;   /* Aligned to top of 960x1104 canvas */
-    left: 0;  /* Aligned to left of 960x1104 canvas */
-    width: 100%;
-    z-index: 101;
-}
+/* 5. TYPOGRAPHY & UI */
+.gothic-title { font-family: 'Playfair Display SC', serif; font-size: 3rem; text-transform: uppercase; margin-top: 0; }
+.reverend-voice { margin-top: 2rem; padding: 1rem; color: #c5a059; font-size: 1.3rem; line-height: 1.6; opacity: 0; transition: opacity 1s; }
+.seal-button { background: linear-gradient(180deg, #8a0303, #5a0000); color: #ffcccc; padding: 1rem 2rem; border-radius: 50px; cursor: pointer; border: none; font-family: 'Playfair Display SC', serif; transition: 0.3s; }
+.seal-button:hover { transform: scale(1.05); box-shadow: 0 0 15px #8a0303; }
+.nav-link { display: block; margin-top: 2rem; color: #555; text-decoration: none; }
 
-/* THE TALKING FLAP: Pure vertical movement to stop side-to-side sway */
-.talking #bishop-jaw {
-    animation: flap 0.3s infinite alternate ease-in-out;
-}
-
-@keyframes flap {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(12px); } /* Only vertical movement */
-}
-
-@keyframes bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-25px); }
-}
-
-/* 4. TYPOGRAPHY & INTERFACE */
-.gothic-title {
-    font-family: 'Playfair Display SC', serif;
-    font-size: 3rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-top: 0;
-}
-
-.quote {
-    font-style: italic;
-    color: #888;
-    margin-bottom: 2rem;
-    font-size: 1.1rem;
-}
-
-textarea {
-    width: 90%;
-    height: 100px;
-    background: #0d0d0d;
-    border: 2px solid #333;
-    color: #e0d8c3;
-    font-family: inherit;
-    font-size: 1.2rem;
-    padding: 1rem;
-    border-radius: 4px;
-    outline: none;
-    resize: none;
-    box-shadow: inset 0 0 10px #000;
-}
-
-.seal-button {
-    background: linear-gradient(180deg, #8a0303, #5a0000);
-    color: #ffcccc;
-    border: 2px solid #3a0000;
-    padding: 1rem 2rem;
-    font-family: 'Playfair Display SC', serif;
-    font-size: 1.2rem;
-    cursor: pointer;
-    margin-top: 1.5rem;
-    border-radius: 50px;
-    box-shadow: 0 4px 15px rgba(138, 3, 3, 0.4);
-    transition: all 0.3s ease;
-}
-
-.reverend-voice {
-    margin-top: 2rem;
-    padding: 1rem;
-    border-top: 1px solid #444;
-    border-bottom: 1px solid #444;
-    color: #c5a059;
-    font-size: 1.3rem;
-    line-height: 1.6;
-    min-height: 50px;
-    opacity: 0;
-    transition: opacity 1s ease-in;
-}
-
-.nav-link {
-    display: block;
-    margin-top: 2rem;
-    color: #555;
-    text-decoration: none;
-}
-
-@keyframes flicker {
-    0%, 100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.1); }
-    50% { box-shadow: 0 0 40px rgba(255, 150, 0, 0.3); }
-}
+@keyframes flicker { 0%, 100% { box-shadow: 0 0 20px rgba(255,140,0,0.1); } 50% { box-shadow: 0 0 40px rgba(255,150,0,0.3); } }

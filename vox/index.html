@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>St. Maudlyn's Confessional</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display+SC:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div id="holy-smoke"></div>
 
     <div id="bishop-container">
         <img src="../images/bishop-body.png" id="bishop-body" alt="The Bishop">
@@ -20,85 +19,97 @@
     <div class="confessional-booth">
         <h1 class="gothic-title">The Confessional</h1>
         <p class="quote">"Speak plainly, for the ink of the soul never dries."</p>
-
         <textarea id="confessionInput" placeholder="Whisper your transgression here..."></textarea>
-        
-        <button onclick="submitConfession()" class="seal-button">
-            † SEEK ABSOLUTION †
-        </button>
-
+        <button onclick="submitConfession()" class="seal-button">† SEEK ABSOLUTION †</button>
         <div id="result" class="reverend-voice"></div>
-        
         <a href="/" class="nav-link">[ Return to the Nave ]</a>
     </div>
 
     <script>
-        // 1. THE REVEREND'S VOICE ENGINE
-        function speakVerdict(text) {
-            window.speechSynthesis.cancel(); // Clear previous speech
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-GB'; // British English
-            utterance.pitch = 0.6;    // Deep and stern
-            utterance.rate = 0.85;   // Measured and world-weary
-            window.speechSynthesis.speak(utterance);
+        let audioCtx, analyser, dataArray, source;
+
+        // AUDIO ENGINE: This 'listens' to the audio and calculates volume levels
+        function initAudioSync(audioElement) {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 64; 
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+            }
+            if (source) source.disconnect();
+            source = audioCtx.createMediaElementSource(audioElement);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+        }
+
+        // ANIMATION LOOP: Moves the jaw up/down based on the volume of the sound
+        function animateJaw() {
+            if (!analyser) return;
+            analyser.getByteFrequencyData(dataArray);
+            
+            let volume = dataArray.reduce((a, b) => a + b) / dataArray.length;
+            const jaw = document.getElementById("bishop-jaw");
+
+            // Mapping: Higher volume = more translateY (max 22px)
+            let moveY = Math.min(volume / 4, 22); 
+            jaw.style.transform = `translateY(${moveY}px)`;
+
+            if (!document.querySelector('audio').paused) {
+                requestAnimationFrame(animateJaw);
+            } else {
+                jaw.style.transform = `translateY(0)`; // Close mouth when silent
+            }
         }
 
         async function submitConfession() {
-            const inputField = document.getElementById("confessionInput");
-            const resultDiv = document.getElementById("result");
-            const bishop = document.getElementById("bishop-container"); 
-            const confessionText = inputField.value;
+    const inputField = document.getElementById("confessionInput");
+    const resultDiv = document.getElementById("result");
+    const confessionText = inputField.value;
 
-            if (!confessionText) return;
+    if (!confessionText) return;
 
-            // Materialize the Bishop
-            bishop.classList.add("materialize");
+    resultDiv.style.opacity = "1";
+    resultDiv.innerText = "The Reverend is contemplating your soul...";
+    
+    try {
+        const response = await fetch('/.netlify/functions/the-reverend', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ confession: confessionText })
+        });
 
-            resultDiv.style.opacity = "1";
-            resultDiv.innerText = "The Reverend is contemplating your soul...";
+        const data = await response.json();
+
+        if (response.ok) {
+            resultDiv.innerText = ""; 
             
-            try {
-                const response = await fetch('/.netlify/functions/the-reverend', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ confession: confessionText })
-                });
+            // Play the Reverend's Voice
+            const audio = new Audio("data:audio/mp3;base64," + data.audio);
+            audio.play();
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    resultDiv.innerText = ""; 
-                    speakVerdict(data.absolution);
-                    typeWriter(data.absolution, 0);
-                } else {
-                    resultDiv.innerText = "The Reverend is silent.";
-                }
-            } catch (error) {
-                resultDiv.innerText = "A darkness has fallen over the line.";
-            }
+            // Sync Typewriter and Jaw with the Audio
+            typeWriter(data.absolution, 0);
+        } else {
+            resultDiv.innerText = "The Reverend is silent.";
         }
+    } catch (error) {
+        resultDiv.innerText = "A darkness has fallen over the line.";
+    }
+}
 
-        function typeWriter(text, i) {
-            const resultDiv = document.getElementById("result");
-            const bishop = document.getElementById("bishop-container");
+function typeWriter(text, i) {
+    const resultDiv = document.getElementById("result");
+    const bishop = document.getElementById("bishop-container");
 
-            if (i < text.length) {
-                resultDiv.innerHTML += text.charAt(i);
-                
-                // Sync jaw flap to the ACTUAL speech engine
-                if (window.speechSynthesis.speaking) {
-                    bishop.classList.add("talking");
-                } else {
-                    bishop.classList.remove("talking");
-                }
-
-                setTimeout(() => typeWriter(text, i + 1), 70);
-            } else {
-                // Stop flapping when the text and speech are finished
-                setTimeout(() => bishop.classList.remove("talking"), 500);
-            }
-        }
+    if (i < text.length) {
+        resultDiv.innerHTML += text.charAt(i);
+        bishop.classList.add("talking"); // Start Jaw Flap
+        setTimeout(() => typeWriter(text, i + 1), 45); // Speed adjusted for speech
+    } else {
+        // Wait a moment after text finishes before stopping the jaw
+        setTimeout(() => bishop.classList.remove("talking"), 500);
+    }
+}
     </script>
-
 </body>
 </html>
