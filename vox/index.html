@@ -61,7 +61,7 @@
             }
         }
 
-        async function submitConfession() {
+    async function submitConfession() {
     const inputField = document.getElementById("confessionInput");
     const resultDiv = document.getElementById("result");
     const confessionText = inputField.value;
@@ -84,16 +84,19 @@
             resultDiv.innerText = ""; 
             
             // Play the Reverend's Voice
-            const audio = new Audio("data:audio/mp3;base64," + data.audio);
-            audio.play();
+            if (data.audio) {
+                const audio = new Audio("data:audio/mp3;base64," + data.audio);
+                audio.play();
+            }
 
-            // Sync Typewriter and Jaw with the Audio
+            // Sync Typewriter and Jaw
             typeWriter(data.absolution, 0);
         } else {
-            resultDiv.innerText = "The Reverend is silent.";
+            resultDiv.innerText = "The Reverend is silent. " + (data.absolution || "");
         }
     } catch (error) {
-        resultDiv.innerText = "A darkness has fallen over the line.";
+        resultDiv.innerText = "A darkness has fallen over the line. (Check Console)";
+        console.error("Confession Error:", error);
     }
 }
 
@@ -103,11 +106,10 @@ function typeWriter(text, i) {
 
     if (i < text.length) {
         resultDiv.innerHTML += text.charAt(i);
-        bishop.classList.add("talking"); // Start Jaw Flap
-        setTimeout(() => typeWriter(text, i + 1), 45); // Speed adjusted for speech
+        if(bishop) bishop.classList.add("talking"); 
+        setTimeout(() => typeWriter(text, i + 1), 45);
     } else {
-        // Wait a moment after text finishes before stopping the jaw
-        setTimeout(() => bishop.classList.remove("talking"), 500);
+        if(bishop) setTimeout(() => bishop.classList.remove("talking"), 500);
     }
 }
     </script>
