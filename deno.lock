@@ -11,7 +11,8 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
-        "npm:@google/generative-ai@~0.24.1"
+        "npm:@google/generative-ai@0.21",
+        "npm:axios@^1.6.0"
       ]
     }
   }
