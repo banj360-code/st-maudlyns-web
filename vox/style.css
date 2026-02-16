@@ -1,5 +1,7 @@
+/* BACKGROUND & ATMOSPHERE */
 body {
     background-color: #050505;
+    background-image: radial-gradient(circle at center, #1a1a1d 0%, #000000 100%);
     color: #dcdcdc;
     font-family: 'EB Garamond', serif;
     height: 100vh;
@@ -10,37 +12,110 @@ body {
     overflow: hidden;
 }
 
-.confessional-booth {
-    background: rgba(20, 10, 10, 0.8);
-    border: 8px solid #2a2a2a;
-    padding: 3rem;
-    width: 450px;
-    text-align: center;
-    border-radius: 200px 200px 10px 10px;
-    z-index: 5;
-}
-
+/* THE BISHOP */
 #bishop-container {
     position: absolute;
-    top: 5vh; right: 5vw; width: 280px;
+    top: 5vh;   
+    right: 5vw; 
+    width: 280px; 
+    z-index: 100;
+    pointer-events: none;
     animation: bob 4s infinite ease-in-out;
+}
+
+#bishop-body {
+    width: 100%;
+    display: block;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
 }
 
 #bishop-jaw {
     position: absolute;
-    top: 62%; left: 31%; width: 38%;
-    transform-origin: top center;
+    top: 62%;  
+    left: 31%; 
+    width: 38%; 
+    transform-origin: top center; 
+    z-index: 101;
 }
 
+/* THE JAW FLAP ANIMATION */
 .talking #bishop-jaw {
     animation: flap 0.12s infinite alternate ease-in-out;
 }
 
-@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-@keyframes flap { 0% { transform: rotate(0deg); } 100% { transform: rotate(10deg); } }
+@keyframes flap {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(10deg) translateY(2px); }
+}
 
-.reverend-voice { margin-top: 2rem; color: #c5a059; font-size: 1.2rem; min-height: 50px; }
+@keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
 
-textarea { width: 90%; height: 100px; background: #0d0d0d; color: #e0d8c3; padding: 1rem; }
+/* BOOTH STYLES */
+.confessional-booth {
+    background: rgba(20, 10, 10, 0.8);
+    border: 8px solid #2a2a2a;
+    border-top: 8px solid #4a4a4a;
+    padding: 3rem;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    border-radius: 200px 200px 10px 10px; 
+    box-shadow: 0 0 30px rgba(255, 165, 0, 0.2);
+    z-index: 5;
+}
 
-.seal-button { background: #8a0303; color: white; padding: 1rem 2rem; cursor: pointer; border-radius: 50px; }
+.gothic-title {
+    font-family: 'Playfair Display SC', serif;
+    font-size: 3rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-top: 0;
+}
+
+.quote { font-style: italic; color: #888; margin-bottom: 2rem; }
+
+textarea {
+    width: 90%;
+    height: 100px;
+    background: #0d0d0d;
+    border: 2px solid #333;
+    color: #e0d8c3;
+    font-family: inherit;
+    font-size: 1.2rem;
+    padding: 1rem;
+    border-radius: 4px;
+    outline: none;
+    resize: none;
+}
+
+.seal-button {
+    background: linear-gradient(180deg, #8a0303, #5a0000);
+    color: #ffcccc;
+    border: 2px solid #3a0000;
+    padding: 1rem 2rem;
+    font-family: 'Playfair Display SC', serif;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(138, 3, 3, 0.4);
+    transition: all 0.3s ease;
+}
+
+.seal-button:hover { transform: scale(1.05); }
+
+.reverend-voice {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #444;
+    color: #c5a059;
+    font-size: 1.3rem;
+    line-height: 1.6;
+    min-height: 50px;
+}
+
+.nav-link { display: block; margin-top: 2rem; color: #555; text-decoration: none; }

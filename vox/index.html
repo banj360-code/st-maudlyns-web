@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>St. Maudlyn's Confessional</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display+SC:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,17 +18,25 @@
 
     <div class="confessional-booth">
         <h1 class="gothic-title">The Confessional</h1>
+        <p class="quote">"Speak plainly, for the ink of the soul never dries."</p>
+
         <textarea id="confessionInput" placeholder="Whisper your transgression here..."></textarea>
-        <button onclick="submitConfession()" class="seal-button">† SEEK ABSOLUTION †</button>
+        
+        <button onclick="submitConfession()" class="seal-button">
+            † SEEK ABSOLUTION †
+        </button>
+
         <div id="result" class="reverend-voice"></div>
+        
         <a href="/" class="nav-link">[ Return to the Nave ]</a>
     </div>
 
     <script>
         async function submitConfession() {
-            const input = document.getElementById("confessionInput");
+            const inputField = document.getElementById("confessionInput");
             const resultDiv = document.getElementById("result");
-            if (!input.value) return;
+            
+            if (!inputField.value) return;
 
             resultDiv.style.opacity = "1";
             resultDiv.innerText = "The Reverend is contemplating your soul...";
@@ -34,32 +45,43 @@
                 const response = await fetch('/.netlify/functions/the-reverend', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ confession: input.value })
+                    body: JSON.stringify({ confession: inputField.value })
                 });
+
                 const data = await response.json();
 
                 if (response.ok) {
                     resultDiv.innerText = ""; 
-                    const audio = new Audio("data:audio/mp3;base64," + data.audio);
-                    audio.play();
+                    
+                    // 1. AUDIO START
+                    if(data.audio) {
+                        const audio = new Audio("data:audio/mp3;base64," + data.audio);
+                        audio.play().catch(e => console.log("Audio play failed:", e));
+                    }
+
+                    // 2. JAW SYNC START
                     typeWriter(data.absolution, 0);
                 } else {
-                    resultDiv.innerText = "The Reverend is silent.";
+                    resultDiv.innerText = "The Reverend is silent. " + (data.absolution || "");
                 }
             } catch (error) {
                 resultDiv.innerText = "A darkness has fallen over the line.";
+                console.error(error);
             }
         }
 
         function typeWriter(text, i) {
             const resultDiv = document.getElementById("result");
             const bishop = document.getElementById("bishop-container");
+
             if (i < text.length) {
                 resultDiv.innerHTML += text.charAt(i);
-                bishop.classList.add("talking");
+                // JAW MOVE: ON
+                if(bishop) bishop.classList.add("talking");
                 setTimeout(() => typeWriter(text, i + 1), 45);
             } else {
-                setTimeout(() => bishop.classList.remove("talking"), 500);
+                // JAW MOVE: OFF
+                if(bishop) setTimeout(() => bishop.classList.remove("talking"), 500);
             }
         }
     </script>
