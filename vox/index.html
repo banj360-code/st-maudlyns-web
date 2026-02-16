@@ -3,97 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>St. Maudlyn's Confessional</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display+SC:wght@700&display=swap" rel="stylesheet">
+    <title>The Electronic Confessional</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="bishop-container">
-        <img src="../images/bishop-body.png" id="bishop-body" alt="The Bishop">
-        <img src="../images/bishop-jaw.png" id="bishop-jaw" alt="Jaw">
-    </div>
+    <div class="container">
+        <h1>The Electronic Confessional</h1>
+        <p class="subtitle">Reverend Bassette will see you now.</p>
 
-    <div class="confessional-booth">
-        <h1 class="gothic-title">The Confessional</h1>
-        <p class="quote">"Speak plainly, for the ink of the soul never dries."</p>
+        <div id="bishop-container" style="display:none;">
+            <img id="bishop-body" src="../images/bishop-body.png" alt="Reverend Body">
+            <img id="bishop-jaw" src="../images/bishop-jaw.png" alt="Reverend Jaw">
+        </div>
 
-        <textarea id="confessionInput" placeholder="Whisper your transgression here..."></textarea>
-        
-        <button onclick="submitConfession()" class="seal-button">
-            † SEEK ABSOLUTION †
-        </button>
+        <form id="confession-form">
+            <textarea id="confession" placeholder="Confess your sins, my child... (e.g., 'I skipped church for football' or 'I voted Tory')" required></textarea>
+            <br>
+            <button type="submit" id="submit-btn">Seek Absolution</button>
+        </form>
 
-        <div id="result" class="reverend-voice"></div>
-        
-        <a href="/" class="nav-link">[ Return to the Nave ]</a>
+        <div id="result" class="result-box"></div>
     </div>
 
     <script>
-    document.getElementById("confession-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        
-        const confession = document.getElementById("confession").value;
-        const resultDiv = document.getElementById("result");
-        const submitBtn = document.getElementById("submit-btn");
-        
-        // Bishop Elements
-        const bishopContainer = document.getElementById("bishop-container");
-        const bishopJaw = document.getElementById("bishop-jaw");
+        document.getElementById("confession-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const confession = document.getElementById("confession").value;
+            const resultDiv = document.getElementById("result");
+            const submitBtn = document.getElementById("submit-btn");
+            
+            // Bishop Elements (These must exist in the HTML above)
+            const bishopContainer = document.getElementById("bishop-container");
+            const bishopJaw = document.getElementById("bishop-jaw");
 
-        // 1. UI State: Loading
-        resultDiv.innerText = "The Reverend is contemplating your sins...";
-        resultDiv.style.opacity = "1";
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Praying...";
+            // 1. UI State: Loading
+            resultDiv.innerText = "The Reverend is contemplating your sins...";
+            resultDiv.style.opacity = "1";
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Praying...";
 
-        try {
-            // 2. Call the Netlify Function
-            const response = await fetch('/.netlify/functions/the-reverend', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ confession })
-            });
+            try {
+                // 2. Call the Netlify Function
+                const response = await fetch('/.netlify/functions/the-reverend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ confession })
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (response.status === 200) {
-                // 3. Success: Display Text
-                resultDiv.innerText = data.absolution;
+                if (response.status === 200) {
+                    // 3. Success: Display Text
+                    resultDiv.innerText = data.absolution;
 
-                // 4. Handle Audio & Animation
-                const audio = new Audio("data:audio/mp3;base64," + data.audio);
-                
-                // REVEAL THE BISHOP
-                bishopContainer.style.display = "block";
+                    // 4. Handle Audio & Animation
+                    const audio = new Audio("data:audio/mp3;base64," + data.audio);
+                    
+                    // REVEAL THE BISHOP
+                    if(bishopContainer) bishopContainer.style.display = "block";
 
-                // START ANIMATION (When audio actually starts playing)
-                audio.onplay = () => {
-                    bishopJaw.classList.add("talking");
-                };
+                    // START ANIMATION (When audio actually starts playing)
+                    audio.onplay = () => {
+                        if(bishopJaw) bishopJaw.classList.add("talking");
+                    };
 
-                // STOP ANIMATION (When audio finishes)
-                audio.onended = () => {
-                    bishopJaw.classList.remove("talking");
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "Seek Absolution";
-                };
+                    // STOP ANIMATION (When audio finishes)
+                    audio.onended = () => {
+                        if(bishopJaw) bishopJaw.classList.remove("talking");
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "Seek Absolution";
+                    };
 
-                // Play!
-                audio.play();
+                    // Play!
+                    audio.play();
 
-            } else {
-                throw new Error(data.absolution || "The Reverend remains silent.");
+                } else {
+                    throw new Error(data.absolution || "The Reverend remains silent.");
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                resultDiv.innerText = "The Reverend is indisposed. (Error: " + error.message + ")";
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Try Again";
             }
-
-        } catch (error) {
-            resultDiv.innerText = "Error: " + error.message;
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Try Again";
-        }
-    });
-</script>
+        });
+    </script>
 </body>
 </html>
