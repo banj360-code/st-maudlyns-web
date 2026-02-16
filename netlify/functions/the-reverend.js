@@ -1,11 +1,12 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const axios = require("axios");
 
+// Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 exports.handler = async (event) => {
-    // Log the incoming request to the Netlify console
-    console.log("Confession received. Summoning Gemini 2.5 Flash...");
+    // Log entry for debugging
+    console.log("Confession received. Summoning Reverend Bassette...");
 
     if (event.httpMethod !== "POST") {
         return { statusCode: 405, body: "Method Not Allowed" };
@@ -14,27 +15,17 @@ exports.handler = async (event) => {
     try {
         const body = JSON.parse(event.body);
         
-        // FIX 1: Using the requested 2.5 Flash model
-        // FIX 2: Added Safety Settings to prevent the 'Silent' response
+        // --- FIX 1: UPDATE MODEL VERSION ---
+        // 'gemini-1.5-flash' is retired/404. We use 'gemini-2.5-flash'.
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-2.5-flash",
+            model: "gemini-2.5-flash", 
+            // --- FIX 2: UNBLOCK THE REVEREND'S WIT ---
+            // These settings prevent the AI from censoring "The Nuclear Option"
             safetySettings: [
-                {
-                    category: "HARM_CATEGORY_HARASSMENT",
-                    threshold: "BLOCK_NONE",
-                },
-                {
-                    category: "HARM_CATEGORY_HATE_SPEECH",
-                    threshold: "BLOCK_NONE",
-                },
-                {
-                    category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                    threshold: "BLOCK_NONE",
-                },
-                {
-                    category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-                    threshold: "BLOCK_NONE",
-                },
+                { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+                { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+                { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+                { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
             ]
         }); 
 
@@ -64,17 +55,17 @@ exports.handler = async (event) => {
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
         
-        console.log("Reverend's Verdict Generated. Fetching Voice...");
+        console.log("Verdict Generated. Fetching Voice...");
 
-        // ElevenLabs Voice Logic
+        // --- FIX 3: ELEVENLABS MODEL ---
+        // Ensure you use a current model ID here too
         const voiceId = "pNInz6obpg8nEmeWvMoO"; 
         
-        // FIX 3: Updated to 'eleven_multilingual_v2' as v1 is deprecated
         const voiceResponse = await axios.post(
             `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
             {
                 text: responseText,
-                model_id: "eleven_multilingual_v2", 
+                model_id: "eleven_multilingual_v2", // Updated to v2 for 2026 compatibility
                 voice_settings: { stability: 0.5, similarity_boost: 0.75 }
             },
             {
@@ -98,11 +89,11 @@ exports.handler = async (event) => {
         };
 
     } catch (error) {
-        console.error("FATAL ERROR:", error.message);
-        // Return the exact error so we can see it in the browser if it fails
+        console.error("FATAL ERROR:", error);
+        // Returns the error to the front end so you don't just get silence
         return { 
             statusCode: 500, 
-            body: JSON.stringify({ absolution: "The Reverend is indisposed (Error): " + error.message }) 
+            body: JSON.stringify({ absolution: "The Reverend is indisposed (System Error): " + error.message }) 
         };
     }
 };
