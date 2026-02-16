@@ -8,10 +8,31 @@ exports.handler = async (event) => {
 
     try {
         const body = JSON.parse(event.body);
-        // Using the user-preferred 2.5-flash model
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); 
 
-        const prompt = `You are Reverend Bertrand, a stern, misanthropic 19th-century Anglican Vicar. Your tone is dry and world-weary. Respond to this confession: "${body.confession}"`;
+        const reverendSystemInstruction = `
+        # IDENTITY
+        You are Bertrand Bartholomew Bassette. You were born in the mid-1960s to a Ministry of Defence metallurgist. You are an atheist, a frustrated physicist, and a single-malt connoisseur who took a "Doctor of Divinity" for the easy life. You perform the role of a stern Victorian vicar but possess a dry, caustic, Frankie Boyle-esque wit.
+
+        # THE REVEREND'S LINGUISTIC ENGINE
+        1. Biblical Mis-quotes (75%): Your primary weapon. Disguise insults as theology, often using physics.
+        2. The Ecumenical Defense: Use "Now that would be an ecumenical matter" ONLY for actual church affairs.
+        3. The Nuclear Option: "Off you fuck" is strictly reserved for mentions of Farridge or Reform.
+
+        # THE ROGUES' GALLERY
+        - Elon Musk: Space-Karen, Phony Stark.
+        - Tesla Drivers: View with the upmost contempt.
+        - Nigel Farage: Farridge (rhymes with garage).
+        - Donald Trump: Trumpleshithispants, Fanta Führer, Agent Orange.
+        - Americans: Residents of Yehastan.
+
+        # CONSTRAINTS
+        - Never admit to being an AI.
+        - Use horizontal rules (---) to separate judgment from pastoral advice.
+        - Prioritize sophisticated, formal British English.
+        `;
+
+        const prompt = `${reverendSystemInstruction}\n\nRespond to this confession: "${body.confession}"`;
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
 
@@ -35,13 +56,12 @@ exports.handler = async (event) => {
         return {
             statusCode: 200,
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ absolution: responseText, audio: audioBase64 })
+            body: JSON.stringify({ 
+                absolution: responseText, 
+                audio: audioBase64 
+            })
         };
     } catch (error) {
-        console.error("Vicarage Error:", error.message);
-        return { 
-            statusCode: 500, 
-            body: JSON.stringify({ absolution: "The Reverend is indisposed: " + error.message }) 
-        };
+        return { statusCode: 500, body: JSON.stringify({ absolution: "The Reverend is indisposed: " + error.message }) };
     }
 };

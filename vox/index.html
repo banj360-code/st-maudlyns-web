@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>St. Maudlyn's Confessional</title>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display+SC:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div id="holy-smoke"></div>
 
     <div id="bishop-container">
         <img src="../images/bishop-body.png" id="bishop-body" alt="The Bishop">
@@ -18,7 +15,6 @@
 
     <div class="confessional-booth">
         <h1 class="gothic-title">The Confessional</h1>
-        <p class="quote">"Speak plainly, for the ink of the soul never dries."</p>
         <textarea id="confessionInput" placeholder="Whisper your transgression here..."></textarea>
         <button onclick="submitConfession()" class="seal-button">† SEEK ABSOLUTION †</button>
         <div id="result" class="reverend-voice"></div>
@@ -26,92 +22,46 @@
     </div>
 
     <script>
-        let audioCtx, analyser, dataArray, source;
+        async function submitConfession() {
+            const input = document.getElementById("confessionInput");
+            const resultDiv = document.getElementById("result");
+            if (!input.value) return;
 
-        // AUDIO ENGINE: This 'listens' to the audio and calculates volume levels
-        function initAudioSync(audioElement) {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 64; 
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
+            resultDiv.style.opacity = "1";
+            resultDiv.innerText = "The Reverend is contemplating your soul...";
+            
+            try {
+                const response = await fetch('/.netlify/functions/the-reverend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ confession: input.value })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerText = ""; 
+                    const audio = new Audio("data:audio/mp3;base64," + data.audio);
+                    audio.play();
+                    typeWriter(data.absolution, 0);
+                } else {
+                    resultDiv.innerText = "The Reverend is silent.";
+                }
+            } catch (error) {
+                resultDiv.innerText = "A darkness has fallen over the line.";
             }
-            if (source) source.disconnect();
-            source = audioCtx.createMediaElementSource(audioElement);
-            source.connect(analyser);
-            analyser.connect(audioCtx.destination);
         }
 
-        // ANIMATION LOOP: Moves the jaw up/down based on the volume of the sound
-        function animateJaw() {
-            if (!analyser) return;
-            analyser.getByteFrequencyData(dataArray);
-            
-            let volume = dataArray.reduce((a, b) => a + b) / dataArray.length;
-            const jaw = document.getElementById("bishop-jaw");
-
-            // Mapping: Higher volume = more translateY (max 22px)
-            let moveY = Math.min(volume / 4, 22); 
-            jaw.style.transform = `translateY(${moveY}px)`;
-
-            if (!document.querySelector('audio').paused) {
-                requestAnimationFrame(animateJaw);
+        function typeWriter(text, i) {
+            const resultDiv = document.getElementById("result");
+            const bishop = document.getElementById("bishop-container");
+            if (i < text.length) {
+                resultDiv.innerHTML += text.charAt(i);
+                bishop.classList.add("talking");
+                setTimeout(() => typeWriter(text, i + 1), 45);
             } else {
-                jaw.style.transform = `translateY(0)`; // Close mouth when silent
+                setTimeout(() => bishop.classList.remove("talking"), 500);
             }
         }
-
-    async function submitConfession() {
-    const inputField = document.getElementById("confessionInput");
-    const resultDiv = document.getElementById("result");
-    const confessionText = inputField.value;
-
-    if (!confessionText) return;
-
-    resultDiv.style.opacity = "1";
-    resultDiv.innerText = "The Reverend is contemplating your soul...";
-    
-    try {
-        const response = await fetch('/.netlify/functions/the-reverend', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ confession: confessionText })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            resultDiv.innerText = ""; 
-            
-            // Play the Reverend's Voice
-            if (data.audio) {
-                const audio = new Audio("data:audio/mp3;base64," + data.audio);
-                audio.play();
-            }
-
-            // Sync Typewriter and Jaw
-            typeWriter(data.absolution, 0);
-        } else {
-            resultDiv.innerText = "The Reverend is silent. " + (data.absolution || "");
-        }
-    } catch (error) {
-        resultDiv.innerText = "A darkness has fallen over the line. (Check Console)";
-        console.error("Confession Error:", error);
-    }
-}
-
-function typeWriter(text, i) {
-    const resultDiv = document.getElementById("result");
-    const bishop = document.getElementById("bishop-container");
-
-    if (i < text.length) {
-        resultDiv.innerHTML += text.charAt(i);
-        if(bishop) bishop.classList.add("talking"); 
-        setTimeout(() => typeWriter(text, i + 1), 45);
-    } else {
-        if(bishop) setTimeout(() => bishop.classList.remove("talking"), 500);
-    }
-}
     </script>
 </body>
 </html>
