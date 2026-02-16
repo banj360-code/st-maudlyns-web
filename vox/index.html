@@ -32,58 +32,68 @@
     </div>
 
     <script>
-        async function submitConfession() {
-            const inputField = document.getElementById("confessionInput");
-            const resultDiv = document.getElementById("result");
-            
-            if (!inputField.value) return;
+    document.getElementById("confession-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const confession = document.getElementById("confession").value;
+        const resultDiv = document.getElementById("result");
+        const submitBtn = document.getElementById("submit-btn");
+        
+        // Bishop Elements
+        const bishopContainer = document.getElementById("bishop-container");
+        const bishopJaw = document.getElementById("bishop-jaw");
 
-            resultDiv.style.opacity = "1";
-            resultDiv.innerText = "The Reverend is contemplating your soul...";
-            
-            try {
-                const response = await fetch('/.netlify/functions/the-reverend', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ confession: inputField.value })
-                });
+        // 1. UI State: Loading
+        resultDiv.innerText = "The Reverend is contemplating your sins...";
+        resultDiv.style.opacity = "1";
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Praying...";
 
-                const data = await response.json();
+        try {
+            // 2. Call the Netlify Function
+            const response = await fetch('/.netlify/functions/the-reverend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ confession })
+            });
 
-                if (response.ok) {
-                    resultDiv.innerText = ""; 
-                    
-                    // 1. AUDIO START
-                    if(data.audio) {
-                        const audio = new Audio("data:audio/mp3;base64," + data.audio);
-                        audio.play().catch(e => console.log("Audio play failed:", e));
-                    }
+            const data = await response.json();
 
-                    // 2. JAW SYNC START
-                    typeWriter(data.absolution, 0);
-                } else {
-                    resultDiv.innerText = "The Reverend is silent. " + (data.absolution || "");
-                }
-            } catch (error) {
-                resultDiv.innerText = "A darkness has fallen over the line.";
-                console.error(error);
-            }
-        }
+            if (response.status === 200) {
+                // 3. Success: Display Text
+                resultDiv.innerText = data.absolution;
 
-        function typeWriter(text, i) {
-            const resultDiv = document.getElementById("result");
-            const bishop = document.getElementById("bishop-container");
+                // 4. Handle Audio & Animation
+                const audio = new Audio("data:audio/mp3;base64," + data.audio);
+                
+                // REVEAL THE BISHOP
+                bishopContainer.style.display = "block";
 
-            if (i < text.length) {
-                resultDiv.innerHTML += text.charAt(i);
-                // JAW MOVE: ON
-                if(bishop) bishop.classList.add("talking");
-                setTimeout(() => typeWriter(text, i + 1), 45);
+                // START ANIMATION (When audio actually starts playing)
+                audio.onplay = () => {
+                    bishopJaw.classList.add("talking");
+                };
+
+                // STOP ANIMATION (When audio finishes)
+                audio.onended = () => {
+                    bishopJaw.classList.remove("talking");
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Seek Absolution";
+                };
+
+                // Play!
+                audio.play();
+
             } else {
-                // JAW MOVE: OFF
-                if(bishop) setTimeout(() => bishop.classList.remove("talking"), 500);
+                throw new Error(data.absolution || "The Reverend remains silent.");
             }
+
+        } catch (error) {
+            resultDiv.innerText = "Error: " + error.message;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Try Again";
         }
-    </script>
+    });
+</script>
 </body>
 </html>
