@@ -103,12 +103,12 @@ button:disabled {
     white-space: pre-wrap; /* Preserves the Reverend's formatting */
 }
 
-/* --- THE CLOUD BISHOP ANIMATION --- */
+/* --- THE CLOUD BISHOP --- */
 
 #bishop-container {
-    display: none; /* Hidden by default */
+    display: none;
     position: relative;
-    width: 250px; /* Adjusted size */
+    width: 250px;
     margin: 0 auto 20px auto;
 }
 
@@ -125,17 +125,7 @@ button:disabled {
     top: 0;
     left: 0;
     z-index: 2;
-    transform-origin: center top; 
-}
-
-/* The talking animation definition */
-@keyframes jabber {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(15px); } /* Jaw drops down */
-    100% { transform: translateY(0px); }
-}
-
-/* This class is added by JS when he speaks */
-.talking {
-    animation: jabber 0.2s infinite; 
+    transform-origin: center top;
+    /* Smooths the movement slightly so it looks natural, not robotic */
+    transition: transform 0.05s linear; 
 }

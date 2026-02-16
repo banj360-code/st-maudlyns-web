@@ -27,69 +27,125 @@
     </div>
 
     <script>
-        document.getElementById("confession-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            
-            const confession = document.getElementById("confession").value;
-            const resultDiv = document.getElementById("result");
-            const submitBtn = document.getElementById("submit-btn");
-            
-            // Bishop Elements (These must exist in the HTML above)
-            const bishopContainer = document.getElementById("bishop-container");
-            const bishopJaw = document.getElementById("bishop-jaw");
+    // Helper to decode the Base64 audio string
+    function base64ToArrayBuffer(base64) {
+        const binaryString = window.atob(base64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
 
-            // 1. UI State: Loading
-            resultDiv.innerText = "The Reverend is contemplating your sins...";
-            resultDiv.style.opacity = "1";
-            submitBtn.disabled = true;
-            submitBtn.innerText = "Praying...";
+    let audioContext; // Store context globally to reuse
 
-            try {
-                // 2. Call the Netlify Function
-                const response = await fetch('/.netlify/functions/the-reverend', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ confession })
-                });
+    document.getElementById("confession-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const confession = document.getElementById("confession").value;
+        const resultDiv = document.getElementById("result");
+        const submitBtn = document.getElementById("submit-btn");
+        const bishopContainer = document.getElementById("bishop-container");
+        const bishopJaw = document.getElementById("bishop-jaw");
 
-                const data = await response.json();
+        // Initialize AudioContext immediately on user interaction
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+        }
 
-                if (response.status === 200) {
-                    // 3. Success: Display Text
-                    resultDiv.innerText = data.absolution;
+        // UI State: Loading
+        resultDiv.innerText = "The Reverend is contemplating your sins...";
+        resultDiv.style.opacity = "1";
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Praying...";
 
-                    // 4. Handle Audio & Animation
-                    const audio = new Audio("data:audio/mp3;base64," + data.audio);
-                    
-                    // REVEAL THE BISHOP
-                    if(bishopContainer) bishopContainer.style.display = "block";
+        try {
+            // Call the Netlify Function
+            const response = await fetch('/.netlify/functions/the-reverend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ confession })
+            });
 
-                    // START ANIMATION (When audio actually starts playing)
-                    audio.onplay = () => {
-                        if(bishopJaw) bishopJaw.classList.add("talking");
-                    };
+            const data = await response.json();
 
-                    // STOP ANIMATION (When audio finishes)
-                    audio.onended = () => {
-                        if(bishopJaw) bishopJaw.classList.remove("talking");
-                        submitBtn.disabled = false;
-                        submitBtn.innerText = "Seek Absolution";
-                    };
+            if (response.status === 200) {
+                resultDiv.innerText = data.absolution;
 
-                    // Play!
-                    audio.play();
+                // --- AUDIO & ANIMATION LOGIC ---
+                
+                // 1. Decode the audio data
+                const audioBuffer = await audioContext.decodeAudioData(base64ToArrayBuffer(data.audio));
+                
+                // 2. Create Audio Source & Analyser
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                
+                const analyser = audioContext.createAnalyser();
+                analyser.fftSize = 32; // Low setting for performance, good for volume
+                
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
 
-                } else {
-                    throw new Error(data.absolution || "The Reverend remains silent.");
+                // 3. Show the Bishop
+                bishopContainer.style.display = "block";
+
+                // 4. Animation Loop
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+                let animationId;
+
+                function animateJaw() {
+                    analyser.getByteFrequencyData(dataArray);
+
+                    // Calculate average volume
+                    let sum = 0;
+                    for(let i = 0; i < dataArray.length; i++) {
+                        sum += dataArray[i];
+                    }
+                    const volume = sum / dataArray.length;
+
+                    // Threshold: Only move if there is actual sound (removes "jitters")
+                    if (volume > 10) {
+                        // Map volume to movement
+                        // We cap it at 12px (20% less than previous 15px)
+                        // '0.1' is the sensitivity multiplier
+                        const movement = Math.min(volume * 0.1, 12); 
+                        bishopJaw.style.transform = `translateY(${movement}px)`;
+                    } else {
+                        // Close jaw during silence
+                        bishopJaw.style.transform = `translateY(0px)`;
+                    }
+
+                    animationId = requestAnimationFrame(animateJaw);
                 }
 
-            } catch (error) {
-                console.error("Error:", error);
-                resultDiv.innerText = "The Reverend is indisposed. (Error: " + error.message + ")";
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Try Again";
+                // Start playback and animation
+                source.start(0);
+                animateJaw();
+
+                // Cleanup when audio finishes
+                source.onended = () => {
+                    cancelAnimationFrame(animationId);
+                    bishopJaw.style.transform = `translateY(0px)`; // Ensure jaw closes
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Seek Absolution";
+                };
+
+            } else {
+                throw new Error(data.absolution || "The Reverend remains silent.");
             }
-        });
-    </script>
+
+        } catch (error) {
+            console.error("Error:", error);
+            resultDiv.innerText = "The Reverend is indisposed. (Error: " + error.message + ")";
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Try Again";
+        }
+    });
+</script>
 </body>
 </html>
