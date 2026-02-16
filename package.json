@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@google/generative-ai": "^0.21.0",
+    "@google/generative-ai": "latest",
     "axios": "^1.6.0"
   }
 }
