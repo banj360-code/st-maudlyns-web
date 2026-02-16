@@ -55,17 +55,19 @@ exports.handler = async (event) => {
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
         
-        console.log("Verdict Generated. Fetching Voice...");
+        // ... previous code ...
+        const responseText = result.response.text();
+        
+        console.log("Reverend's Verdict Generated. Fetching Voice...");
 
-        // --- FIX 3: ELEVENLABS MODEL ---
-        // Ensure you use a current model ID here too
-        const voiceId = "pNInz6obpg8nEmeWvMoO"; 
+        // FIX: Updated to a valid British Voice ID (George) because the old one 404'd
+        const voiceId = "JBFqnCBsd6RMkjVDRZzb"; 
         
         const voiceResponse = await axios.post(
             `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
             {
                 text: responseText,
-                model_id: "eleven_multilingual_v2", // Updated to v2 for 2026 compatibility
+                model_id: "eleven_multilingual_v2", 
                 voice_settings: { stability: 0.5, similarity_boost: 0.75 }
             },
             {
@@ -76,6 +78,7 @@ exports.handler = async (event) => {
                 responseType: "arraybuffer"
             }
         );
+        // ... rest of code ...
 
         const audioBase64 = Buffer.from(voiceResponse.data).toString("base64");
 
