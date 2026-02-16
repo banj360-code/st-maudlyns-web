@@ -14,8 +14,29 @@ exports.handler = async (event) => {
     try {
         const body = JSON.parse(event.body);
         
-        // FIX: Using the requested 2.5 Flash model
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); 
+        // FIX 1: Using the requested 2.5 Flash model
+        // FIX 2: Added Safety Settings to prevent the 'Silent' response
+        const model = genAI.getGenerativeModel({ 
+            model: "gemini-2.5-flash",
+            safetySettings: [
+                {
+                    category: "HARM_CATEGORY_HARASSMENT",
+                    threshold: "BLOCK_NONE",
+                },
+                {
+                    category: "HARM_CATEGORY_HATE_SPEECH",
+                    threshold: "BLOCK_NONE",
+                },
+                {
+                    category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    threshold: "BLOCK_NONE",
+                },
+                {
+                    category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    threshold: "BLOCK_NONE",
+                },
+            ]
+        }); 
 
         const reverendSystemInstruction = `
         # IDENTITY
@@ -47,11 +68,13 @@ exports.handler = async (event) => {
 
         // ElevenLabs Voice Logic
         const voiceId = "pNInz6obpg8nEmeWvMoO"; 
+        
+        // FIX 3: Updated to 'eleven_multilingual_v2' as v1 is deprecated
         const voiceResponse = await axios.post(
             `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
             {
                 text: responseText,
-                model_id: "eleven_monolingual_v1",
+                model_id: "eleven_multilingual_v2", 
                 voice_settings: { stability: 0.5, similarity_boost: 0.75 }
             },
             {
@@ -79,7 +102,7 @@ exports.handler = async (event) => {
         // Return the exact error so we can see it in the browser if it fails
         return { 
             statusCode: 500, 
-            body: JSON.stringify({ absolution: "The Reverend is indisposed (2.5 Error): " + error.message }) 
+            body: JSON.stringify({ absolution: "The Reverend is indisposed (Error): " + error.message }) 
         };
     }
 };
