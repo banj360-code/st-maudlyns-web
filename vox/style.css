@@ -1,7 +1,5 @@
-/* IMPORT FONTS */
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400&display=swap');
 
-/* BACKGROUND & ATMOSPHERE */
 body {
     background-color: #050505;
     background-image: radial-gradient(circle at center, #1a1a1d 0%, #000000 100%);
@@ -13,119 +11,126 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
+    overflow: hidden; 
 }
 
-/* LAYOUT CONTAINER */
-.container {
-    background: rgba(20, 20, 20, 0.8);
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-    max-width: 600px;
-    width: 90%;
-    border: 1px solid #333;
+
+
+/* --- THE SURPRISE GUEST (Devil/Jack-in-the-box) --- */
+#surprise-guest {
+    position: fixed;
+    bottom: -100%; /* Hidden off-bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    z-index: 50;
+    pointer-events: none;
 }
 
-/* TYPOGRAPHY */
-h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    color: #f0e68c; /* Khaki Gold */
-    text-shadow: 2px 2px 4px #000;
+/* Triggered by JS - A 6-second grand entrance and exit */
+.run-theatre {
+    animation: theatre-sequence 6s forwards ease-in-out;
 }
 
-.subtitle {
-    font-style: italic;
-    color: #a9a9a9;
-    margin-bottom: 2rem;
+@keyframes theatre-sequence {
+    0% { bottom: -100%; opacity: 1; filter: blur(0); }
+    /* Rise: Takes 2 seconds */
+    33% { bottom: 0px; opacity: 1; filter: blur(0); transform: translateX(-50%) scale(1); }
+    /* Hold: Stays for 2 seconds */
+    66% { bottom: 0px; opacity: 1; filter: blur(0); transform: translateX(-50%) scale(1); }
+    /* Smoke: Takes 2 seconds to dissipate */
+    100% { 
+        bottom: 150px; 
+        opacity: 0; 
+        filter: blur(50px); 
+        transform: translateX(-50%) scale(2); 
+    }
 }
 
-/* FORM ELEMENTS */
-textarea {
-    width: 100%;
-    height: 150px;
-    background-color: #111;
-    border: 1px solid #444;
-    color: #fff;
-    padding: 1rem;
-    font-family: 'EB Garamond', serif;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    resize: none;
-    box-sizing: border-box; /* Ensures padding doesn't break layout */
-    margin-bottom: 1.5rem;
+/* --- THE BISHOP (Heavenly Chariot) --- */
+#heavenly-chariot {
+    position: absolute;
+    top: 50%; /* Positioned above the text box */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px; /* Force Huge Size */
+    z-index: 100;
+    pointer-events: none;
 }
 
-textarea:focus {
-    outline: none;
-    border-color: #f0e68c;
-    box-shadow: 0 0 10px rgba(240, 230, 140, 0.2);
+.hidden { display: none !important; }
+
+.chariot-active {
+    display: block !important;
+    animation: hoverInPlace 4s ease-in-out infinite;
 }
 
-button {
-    background-color: #2a2a2a;
-    color: #f0e68c;
-    border: 1px solid #f0e68c;
-    padding: 10px 30px;
-    font-size: 1.2rem;
-    font-family: 'EB Garamond', serif;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 5px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+@keyframes hoverInPlace {
+    0%   { transform: translate(-50%, -50%) translateY(0px); }
+    50%  { transform: translate(-50%, -50%) translateY(-25px); }
+    100% { transform: translate(-50%, -50%) translateY(0px); }
 }
 
-button:hover {
-    background-color: #f0e68c;
-    color: #000;
-    box-shadow: 0 0 15px rgba(240, 230, 140, 0.5);
-}
-
-button:disabled {
-    background-color: #111;
-    color: #555;
-    border-color: #333;
-    cursor: not-allowed;
-}
-
-/* THE RESULT BOX */
-.result-box {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    border-top: 1px solid #333;
-    font-size: 1.3rem;
-    line-height: 1.6;
-    color: #fff;
-    min-height: 50px;
-    opacity: 0; /* Hidden until content arrives */
-    transition: opacity 1s ease-in;
-    white-space: pre-wrap; /* Preserves the Reverend's formatting */
-}
-
-/* --- THE CLOUD BISHOP --- */
-
-#bishop-container {
-    display: none;
-    position: relative;
-    width: 250px;
-    margin: 0 auto 20px auto;
-}
-
-#bishop-body {
-    width: 100%;
-    display: block;
-    position: relative;
-    z-index: 1;
-}
-
+#bishop-rig { position: relative; width: 100%; }
+#bishop-body { width: 100%; display: block; position: relative; z-index: 1; }
 #bishop-jaw {
     position: absolute;
     width: 100%;
     top: 0;
     left: 0;
     z-index: 2;
-    transform-origin: center top;
-    /* Smooths the movement slightly so it looks natural, not robotic */
-    transition: transform 0.05s linear; 
+    transform-origin: center top; 
+    transition: transform 0.1s ease-out; 
+}
+
+/* --- THE UI --- */
+.container {
+    background: rgba(10, 10, 10, 0.85);
+    padding: 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 1);
+    max-width: 550px;
+    width: 90%;
+    border: 1px solid #444;
+    position: relative;
+    z-index: 10; 
+}
+
+h1 { font-size: 2.8rem; margin-bottom: 0.5rem; color: #f0e68c; text-shadow: 2px 2px 4px #000; }
+.subtitle { font-style: italic; color: #888; margin-bottom: 2rem; }
+
+textarea {
+    width: 100%;
+    height: 120px;
+    background-color: #000;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 1rem;
+    font-family: 'EB Garamond', serif;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    resize: none;
+    box-sizing: border-box; 
+    margin-bottom: 1.5rem;
+}
+
+button {
+    background: #1a1a1a;
+    color: #f0e68c;
+    border: 1px solid #f0e68c;
+    padding: 12px 40px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+button:hover { background: #f0e68c; color: #000; }
+button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.result-box {
+    margin-top: 2rem;
+    font-size: 1.4rem;
+    color: #eee;
+    min-height: 60px;
 }

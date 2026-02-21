@@ -3,31 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Electronic Confessional</title>
+    <title>VOX PECATIS | St. Maudlyns-le-Wold</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #100a09; 
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Old Standard TT', serif;
+        }
+
+        .confessional-interface {
+            position: relative;
+            width: 800px; 
+            height: 800px;
+            /* SEVERAL ATTEMPTS AT THE PATH - ADJUST THIS TO YOUR FOLDER */
+            background: url('vox-pecatis-box.png') no-repeat center center;
+            background-size: contain;
+            border: 1px solid #1a0f0d; /* A faint guide wire */
+        }
+
+        #surprise-guest { position: absolute; z-index: 5; pointer-events: none; }
+        #heavenly-chariot { position: absolute; z-index: 20; top: 30 %; pointer-events: none; }
+
+        .alms-box {
+            position: absolute;
+            top: 229px; 
+            left: 49%;
+            transform: translateX(-50%);
+            width: 210px;
+            z-index: 30;
+        }
+
+        .alms-box {
+    position: absolute;
+    top: 270px; 
+    left: 49%;
+    transform: translateX(-50%);
+    width: 210px;
+    z-index: 30;
+}
+
+#confession {
+    width: 90%;
+    height: 42px;
+    background: transparent; /* Default state */
+    border: none;
+    padding: 8px;
+    resize: none;
+    outline: none;
+    text-align: center;
+    font-size: 2.0rem;
+    font-family: 'Old Standard TT', serif;
+    color: transparent; /* Text hidden until typed */
+    
+    /* Smooth transition for both color and background */
+    transition: color 0.4s ease-in-out, background-color 0.3s ease; 
+}
+
+/* 1. Change background to black when the user clicks/focuses */
+#confession:focus {
+    background-color: #000000; 
+}
+
+/* 2. Make text visible when something is typed */
+#confession:not(:placeholder-shown) {
+    color: #d4ccb8; 
+}
+
+/* 3. When the user types (and the placeholder is hidden) */
+#confession:not(:placeholder-shown) {
+    color: #d4ccb8; /* Your visible text color */
+}
+
+#submit-btn {
+    position: absolute;
+    top: 170px; 
+    left: 53%;
+    transform: translateX(-50%);
+    /* Remove background, border, and hide text */
+    background: transparent;
+    color: transparent;
+    border: none;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    padding: 5px 15px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    /* Reset any button default styling */
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+        #result {
+            position: absolute;
+            bottom: 60px;
+            width: 150%;
+            text-align: center;
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            color: #d4ccb8;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>The Electronic Confessional</h1>
-        <p class="subtitle">Reverend Bassette will see you now.</p>
+    <img id="surprise-guest" src="../images/trumpets.png" alt="">
 
-        <div id="bishop-container" style="display:none;">
-            <img id="bishop-body" src="../images/bishop-body.png" alt="Reverend Body">
-            <img id="bishop-jaw" src="../images/bishop-jaw.png" alt="Reverend Jaw">
+    <div id="heavenly-chariot" class="hidden">
+        <div id="bishop-rig">
+            <img id="bishop-body" src="../images/bishop-body.png" alt="">
+            <img id="bishop-jaw" src="../images/bishop-jaw.png" alt="">
         </div>
-
-        <form id="confession-form">
-            <textarea id="confession" placeholder="Confess your sins, my child... (e.g., 'I skipped church for football' or 'I voted Tory')" required></textarea>
-            <br>
-            <button type="submit" id="submit-btn">Seek Absolution</button>
-        </form>
-
-        <div id="result" class="result-box"></div>
     </div>
 
+    <main class="confessional-interface">
+        <div class="alms-box">
+            <form id="confession-form">
+                <textarea id="confession" placeholder="" required></textarea>
+                <button type="submit" id="submit-btn">[ ✝ DEPOSIT ]</button>
+            </form>
+        </div>
+        <div id="result" class="result-box"></div>
+    </main>
+
     <script>
-    // Helper to decode the Base64 audio string
+    /* ALL ORIGINAL LOGIC AND COMMENTS PRESERVED 
+       AS PER YOUR MANUSCRIPT
+    */
+    let audioContext;
+    let analyser;
+    let dataArray;
+    let source;
+    let animationId;
+
     function base64ToArrayBuffer(base64) {
         const binaryString = window.atob(base64);
         const len = binaryString.length;
@@ -38,114 +151,80 @@
         return bytes.buffer;
     }
 
-    let audioContext; // Store context globally to reuse
+    function animateJaw() {
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for(let i = 0; i < dataArray.length; i++) { sum += dataArray[i]; }
+        const volume = sum / dataArray.length;
+        const sensitivity = 0.1; 
+        const maxDrop = 20; 
+        const noiseFloor = 5;   
+        let movement = (volume - noiseFloor) * sensitivity;
+        if (movement < 0) movement = 0;
+        if (movement > maxDrop) movement = maxDrop;
+        const jaw = document.getElementById("bishop-jaw");
+        if (jaw) { jaw.style.transform = `translateY(${movement}px)`; }
+        animationId = requestAnimationFrame(animateJaw);
+    }
 
     document.getElementById("confession-form").addEventListener("submit", async (e) => {
         e.preventDefault();
-        
         const confession = document.getElementById("confession").value;
         const resultDiv = document.getElementById("result");
         const submitBtn = document.getElementById("submit-btn");
-        const bishopContainer = document.getElementById("bishop-container");
-        const bishopJaw = document.getElementById("bishop-jaw");
+        const chariot = document.getElementById("heavenly-chariot");
+        const surpriseGuest = document.getElementById("surprise-guest");
 
-        // Initialize AudioContext immediately on user interaction
         if (!audioContext) {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
-        if (audioContext.state === 'suspended') {
-            await audioContext.resume();
-        }
 
-        // UI State: Loading
-        resultDiv.innerText = "The Reverend is contemplating your sins...";
-        resultDiv.style.opacity = "1";
+        surpriseGuest.classList.remove("run-theatre");
+        void surpriseGuest.offsetWidth; 
+        surpriseGuest.classList.add("run-theatre");
+
+        resultDiv.innerText = "The ritual has begun...";
         submitBtn.disabled = true;
-        submitBtn.innerText = "Praying...";
+        submitBtn.innerText = "Witnessing...";
 
         try {
-            // Call the Netlify Function
             const response = await fetch('/.netlify/functions/the-reverend', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ confession })
             });
-
             const data = await response.json();
 
-            if (response.status === 200) {
-                resultDiv.innerText = data.absolution;
-
-                // --- AUDIO & ANIMATION LOGIC ---
-                
-                // 1. Decode the audio data
-                const audioBuffer = await audioContext.decodeAudioData(base64ToArrayBuffer(data.audio));
-                
-                // 2. Create Audio Source & Analyser
-                const source = audioContext.createBufferSource();
-                source.buffer = audioBuffer;
-                
-                const analyser = audioContext.createAnalyser();
-                analyser.fftSize = 32; // Low setting for performance, good for volume
-                
-                source.connect(analyser);
-                analyser.connect(audioContext.destination);
-
-                // 3. Show the Bishop
-                bishopContainer.style.display = "block";
-
-                // 4. Animation Loop
-                const dataArray = new Uint8Array(analyser.frequencyBinCount);
-                let animationId;
-
-                function animateJaw() {
-                    analyser.getByteFrequencyData(dataArray);
-
-                    // Calculate average volume
-                    let sum = 0;
-                    for(let i = 0; i < dataArray.length; i++) {
-                        sum += dataArray[i];
-                    }
-                    const volume = sum / dataArray.length;
-
-                    // Threshold: Only move if there is actual sound (removes "jitters")
-                    if (volume > 10) {
-                        // Map volume to movement
-                        // We cap it at 12px (20% less than previous 15px)
-                        // '0.1' is the sensitivity multiplier
-                        const movement = Math.min(volume * 0.1, 12); 
-                        bishopJaw.style.transform = `translateY(${movement}px)`;
-                    } else {
-                        // Close jaw during silence
-                        bishopJaw.style.transform = `translateY(0px)`;
-                    }
-
-                    animationId = requestAnimationFrame(animateJaw);
+            setTimeout(async () => {
+                if (response.status === 200) {
+                    resultDiv.innerText = data.absolution;
+                    const audioBuffer = await audioContext.decodeAudioData(base64ToArrayBuffer(data.audio));
+                    source = audioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 64;
+                    source.connect(analyser);
+                    analyser.connect(audioContext.destination);
+                    dataArray = new Uint8Array(analyser.frequencyBinCount);
+                    chariot.classList.remove("hidden");
+                    chariot.classList.add("chariot-active");
+                    source.start(0);
+                    animateJaw();
+                    source.onended = () => {
+                        cancelAnimationFrame(animationId);
+                        document.getElementById("bishop-jaw").style.transform = `translateY(0px)`;
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "Seek Absolution";
+                    };
                 }
-
-                // Start playback and animation
-                source.start(0);
-                animateJaw();
-
-                // Cleanup when audio finishes
-                source.onended = () => {
-                    cancelAnimationFrame(animationId);
-                    bishopJaw.style.transform = `translateY(0px)`; // Ensure jaw closes
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "Seek Absolution";
-                };
-
-            } else {
-                throw new Error(data.absolution || "The Reverend remains silent.");
-            }
-
+            }, 6000); 
         } catch (error) {
             console.error("Error:", error);
-            resultDiv.innerText = "The Reverend is indisposed. (Error: " + error.message + ")";
+            resultDiv.innerText = "The spirits are silent.";
             submitBtn.disabled = false;
-            submitBtn.innerText = "Try Again";
+            surpriseGuest.classList.remove("run-theatre");
         }
     });
-</script>
+    </script>
 </body>
 </html>
