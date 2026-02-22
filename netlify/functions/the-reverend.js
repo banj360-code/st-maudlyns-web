@@ -1,15 +1,11 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const textToSpeech = require('@google-cloud/text-to-speech');
 
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const textToSpeech = require('@google-cloud/text-to-speech');
-
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Define this ONLY ONCE
+
 const cleanKey = (key) => {
-    if (!key) return ""; 
-    // Removes accidental quotes and fixes Netlify newline characters
+    if (!key) return undefined;
     return key.replace(/^["']|["']$/g, '').replace(/\\n/g, '\n');
 };
 
@@ -18,14 +14,13 @@ const ttsClient = new textToSpeech.TextToSpeechClient({
         project_id: process.env.GOOGLE_PROJECT_ID,
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
         private_key: cleanKey(process.env.GOOGLE_PRIVATE_KEY),
-        
     }
-
-    
 });
 
-console.log("Auth Check - Email present:", !!process.env.GOOGLE_CLIENT_EMAIL);
-console.log("Auth Check - Project ID present:", !!process.env.GOOGLE_PROJECT_ID);
+const cleanTextForTTS = (text) => {
+    if (!text) return "";
+    return text.replace(/[*#_]/g, '').replace(/---/g, '').replace(/\n\s*\n/g, '. ').replace(/\s+/g, ' ').trim();
+};
 
 // --- SURVIVAL MODE: OFFLINE PRE-CANNED INSULTS ---
 // If Google blocks us, the Reverend uses these instead of crashing.
