@@ -3,9 +3,10 @@ const textToSpeech = require('@google-cloud/text-to-speech');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-
+// Define this ONLY ONCE
 const cleanKey = (key) => {
-    if (!key) return undefined;
+    if (!key) return ""; 
+    // Removes accidental quotes and fixes Netlify newline characters
     return key.replace(/^["']|["']$/g, '').replace(/\\n/g, '\n');
 };
 
@@ -17,9 +18,11 @@ const ttsClient = new textToSpeech.TextToSpeechClient({
     }
 });
 
-const cleanTextForTTS = (text) => {
-    if (!text) return "";
-    return text.replace(/[*#_]/g, '').replace(/---/g, '').replace(/\n\s*\n/g, '. ').replace(/\s+/g, ' ').trim();
+const cleanKey = (key) => {
+    if (!key) return "";
+    // This fixes the common issue where Netlify turns actual newlines 
+    // into the literal characters "\n"
+    return key.replace(/\\n/g, '\n');
 };
 
 // --- SURVIVAL MODE: OFFLINE PRE-CANNED INSULTS ---
