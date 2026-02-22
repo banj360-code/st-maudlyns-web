@@ -2,7 +2,3 @@
   command = "echo 'No build step'"
   functions = "netlify/functions"
   publish = "."
-
-[build.environment]
-  GOOGLE_PROJECT_ID = "tts-voice-487619"
-  GOOGLE_CLIENT_EMAIL = "tts-voice@tts-voice-487619.iam.gserviceaccount.com"
