@@ -28,86 +28,97 @@
         }
 
         #surprise-guest { position: absolute; z-index: 5; pointer-events: none; }
-        #heavenly-chariot { position: absolute; z-index: 20; top: 30 %; pointer-events: none; }
+        #heavenly-chariot { position: absolute; z-index: 20; top: 20 %; pointer-events: none; }
 
         .alms-box {
             position: absolute;
             top: 229px; 
             left: 49%;
             transform: translateX(-50%);
-            width: 210px;
+            width: 600px;
             z-index: 30;
         }
 
-        .alms-box {
-    position: absolute;
-    top: 270px; 
-    left: 49%;
-    transform: translateX(-50%);
-    width: 210px;
-    z-index: 30;
-}
+       
 
-#confession {
-    width: 90%;
-    height: 42px;
-    background: transparent; /* Default state */
-    border: none;
-    padding: 8px;
-    resize: none;
-    outline: none;
-    text-align: center;
-    font-size: 2.0rem;
-    font-family: 'Old Standard TT', serif;
-    color: transparent; /* Text hidden until typed */
-    
-    /* Smooth transition for both color and background */
-    transition: color 0.4s ease-in-out, background-color 0.3s ease; 
-}
-
-/* 1. Change background to black when the user clicks/focuses */
-#confession:focus {
-    background-color: #000000; 
-}
-
-/* 2. Make text visible when something is typed */
-#confession:not(:placeholder-shown) {
-    color: #d4ccb8; 
-}
-
-/* 3. When the user types (and the placeholder is hidden) */
-#confession:not(:placeholder-shown) {
-    color: #d4ccb8; /* Your visible text color */
-}
-
-#submit-btn {
-    position: absolute;
-    top: 170px; 
-    left: 53%;
-    transform: translateX(-50%);
-    /* Remove background, border, and hide text */
-    background: transparent;
-    color: transparent;
-    border: none;
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    padding: 5px 15px;
-    cursor: pointer;
-    letter-spacing: 1px;
-    /* Reset any button default styling */
-    appearance: none;
-    -webkit-appearance: none;
-}
-
-        #result {
-            position: absolute;
-            bottom: 60px;
-            width: 150%;
+        #confession {
+            width: 90%;
+            height: 42px;
+            background: transparent; /* Default state */
+            border: none;
+            padding: 8px;
+            resize: none;
+            outline: none;
             text-align: center;
-            font-family: 'Crimson Text', serif;
-            font-style: italic;
-            color: #d4ccb8;
+            font-size: 2.0rem;
+            font-family: 'Old Standard TT', serif;
+            color: transparent; /* Text hidden until typed */
+            
+            /* Smooth transition for both color and background */
+            transition: color 0.4s ease-in-out, background-color 0.3s ease; 
         }
+
+        /* 1. Change background to black when the user clicks/focuses */
+        #confession:focus {
+            background-color: #000000; 
+        }
+
+        /* 2. Make text visible when something is typed */
+        #confession:not(:placeholder-shown) {
+            color: #d4ccb8; 
+        }
+
+        /* 3. When the user types (and the placeholder is hidden) */
+        #confession:not(:placeholder-shown) {
+            color: #d4ccb8; /* Your visible text color */
+        }
+
+        #submit-btn {
+            position: absolute;
+            top: 170px; 
+            left: 53%;
+            transform: translateX(-50%);
+            /* Remove background, border, and hide text */
+            background: transparent;
+            color: transparent;
+            border: none;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            padding: 5px 15px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            /* Reset any button default styling */
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+ #result {
+    position: absolute;
+    bottom: 50px; /* Shifted slightly to accommodate the new padding */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%; 
+    white-space: normal; 
+    overflow-wrap: break-word;
+    text-align: center;
+    font-family: 'Crimson Text', serif;
+    font-size: 1.4rem; 
+    font-style: italic;
+    color: #d4ccb8;
+
+    /* --- NEW: The Semi-Transparent Box --- */
+    background-color: rgba(10, 5, 5, 0.85); /* Deep, dark brown/black at 85% opacity */
+    padding: 15px 25px; /* Gives the text breathing room inside the box */
+    border-radius: 8px; /* Soft, rounded corners */
+    box-sizing: border-box; /* Keeps the padding from breaking your 80% width */
+    border: 1px solid rgba(212, 204, 184, 0.15); /* A very faint border matching the text color */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.7); /* Drops a soft shadow behind it */
+}
+
+/* --- NEW: Hide the box when there is no text --- */
+#result:empty {
+    display: none;
+}
     </style>
 </head>
 <body>
@@ -122,6 +133,20 @@
     </div>
 
     <main class="confessional-interface">
+        
+        <div id="censer-anchor">
+            <div id="stage-box">
+                <div id="scene">
+                    <div id="arm-container">
+                        <img src="../images/censer-cut.png" alt="Arm">
+                        <div id="censer-wrapper">
+                            <img src="../images/censer.png" id="burner" alt="Censer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="smoke-layer"></div>
         <div class="alms-box">
             <form id="confession-form">
                 <textarea id="confession" placeholder="" required></textarea>
@@ -132,9 +157,98 @@
     </main>
 
     <script>
-    /* ALL ORIGINAL LOGIC AND COMMENTS PRESERVED 
+    /* ========================================================
+       NEW: CENSER & SMOKE KINEMATICS
+       (Inserted cleanly above your existing code)
+       ======================================================== */
+    const scene = document.getElementById('scene');
+    const armContainer = document.getElementById('arm-container');
+    const censerWrapper = document.getElementById('censer-wrapper');
+    const smokeLayer = document.getElementById('smoke-layer');
+
+    const armPivotX = 68.6;
+    const armPivotY = 283.2;
+    const censerPivotX = 570;
+    const censerPivotY = 70;
+
+    const dx1 = censerPivotX - armPivotX;  
+    const dy1 = censerPivotY - armPivotY;   
+
+    const holes = [
+        { dx: 571 - censerPivotX, dy: 589 - censerPivotY },
+        { dx: 623 - censerPivotX, dy: 593 - censerPivotY },
+        { dx: 520 - censerPivotX, dy: 588 - censerPivotY }
+    ];
+
+    const censerScale = 0.65; // Matches the CSS transform scale
+
+    function getSafeAngle(element) {
+        if (!element) return 0;
+        const style = window.getComputedStyle(element);
+        const matrix = style.getPropertyValue("transform");
+        if (!matrix || matrix === 'none') return 0;
+        try {
+            const values = matrix.split('(')[1].split(')')[0].split(',');
+            return Math.atan2(parseFloat(values[1]), parseFloat(values[0])) || 0;
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    function getHolePositions() {
+        if (!scene) return [];
+        const sceneRect = scene.getBoundingClientRect();
+        
+        const armAngle = getSafeAngle(armContainer);
+        const censerAngle = getSafeAngle(censerWrapper);
+        const globalCenserAngle = armAngle + censerAngle;
+
+        const startX = sceneRect.left + (armPivotX * censerScale);
+        const startY = sceneRect.top + (armPivotY * censerScale);
+
+        const p2x = (dx1 * Math.cos(armAngle) - dy1 * Math.sin(armAngle)) * censerScale;
+        const p2y = (dx1 * Math.sin(armAngle) + dy1 * Math.cos(armAngle)) * censerScale;
+
+        return holes.map(hole => {
+            const hx = (hole.dx * Math.cos(globalCenserAngle) - hole.dy * Math.sin(globalCenserAngle)) * censerScale;
+            const hy = (hole.dx * Math.sin(globalCenserAngle) + hole.dy * Math.cos(globalCenserAngle)) * censerScale;
+            return {
+                x: startX + p2x + hx,
+                y: startY + p2y + hy
+            };
+        });
+    }
+
+    function spawnSmoke(x, y) {
+        if (!smokeLayer || smokeLayer.childElementCount > 45) return;
+        const smoke = document.createElement('div');
+        smoke.className = 'smoke';
+        const baseSize = Math.random() * 15 + 15;
+        smoke.style.width = baseSize + 'px';
+        smoke.style.height = baseSize + 'px';
+        const driftX = (Math.random() * 20) - 10; 
+        smoke.style.left = (x - baseSize / 2 + driftX) + 'px';
+        smoke.style.top = (y - baseSize / 2) + 'px';
+        smokeLayer.appendChild(smoke);
+        setTimeout(() => smoke.remove(), 3000);
+    }
+
+    function handleSmoke() {
+        const currentHolePositions = getHolePositions();
+        currentHolePositions.forEach(pos => {
+            if (Math.random() > 0.7) spawnSmoke(pos.x, pos.y);
+        });
+        requestAnimationFrame(handleSmoke);
+    }
+    
+    // Start the smoke animation loop immediately
+    requestAnimationFrame(handleSmoke);
+
+
+    /* ========================================================
+       ORIGINAL: ALL LOGIC AND COMMENTS PRESERVED 
        AS PER YOUR MANUSCRIPT
-    */
+       ======================================================== */
     let audioContext;
     let analyser;
     let dataArray;
@@ -168,12 +282,22 @@
     }
 
     document.getElementById("confession-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const confession = document.getElementById("confession").value;
-        const resultDiv = document.getElementById("result");
-        const submitBtn = document.getElementById("submit-btn");
-        const chariot = document.getElementById("heavenly-chariot");
-        const surpriseGuest = document.getElementById("surprise-guest");
+    e.preventDefault();
+    const confessionInput = document.getElementById("confession");
+    const confession = confessionInput.value; // We save their words here
+
+    // 1. ADD THIS: Instantly clear the text from the screen
+    confessionInput.value = ""; 
+    
+    // 2. ADD THIS: Remove the cursor so the black background fades away
+    confessionInput.blur(); 
+
+    const resultDiv = document.getElementById("result");
+    const submitBtn = document.getElementById("submit-btn");
+    const chariot = document.getElementById("heavenly-chariot");
+    const surpriseGuest = document.getElementById("surprise-guest");
+
+    // ... (the rest of your code continues exactly the same) ...
 
         if (!audioContext) {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();

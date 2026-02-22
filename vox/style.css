@@ -14,8 +14,6 @@ body {
     overflow: hidden; 
 }
 
-
-
 /* --- THE SURPRISE GUEST (Devil/Jack-in-the-box) --- */
 #surprise-guest {
     position: fixed;
@@ -29,14 +27,14 @@ body {
 
 /* Triggered by JS - A 6-second grand entrance and exit */
 .run-theatre {
-    animation: theatre-sequence 6s forwards ease-in-out;
+    animation: theatre-sequence 10s forwards ease-in-out;
 }
 
 @keyframes theatre-sequence {
     0% { bottom: -100%; opacity: 1; filter: blur(0); }
     /* Rise: Takes 2 seconds */
     33% { bottom: 0px; opacity: 1; filter: blur(0); transform: translateX(-50%) scale(1); }
-    /* Hold: Stays for 2 seconds */
+    /* Hold: Stays for 6 seconds */
     66% { bottom: 0px; opacity: 1; filter: blur(0); transform: translateX(-50%) scale(1); }
     /* Smoke: Takes 2 seconds to dissipate */
     100% { 
@@ -50,7 +48,7 @@ body {
 /* --- THE BISHOP (Heavenly Chariot) --- */
 #heavenly-chariot {
     position: absolute;
-    top: 50%; /* Positioned above the text box */
+    top: 30%; /* Positioned above the text box */
     left: 50%;
     transform: translate(-50%, -50%);
     width: 500px; /* Force Huge Size */
@@ -133,4 +131,102 @@ button:disabled { opacity: 0.3; cursor: not-allowed; }
     font-size: 1.4rem;
     color: #eee;
     min-height: 60px;
+}
+
+/* =========================================
+   NEW: THE CENSER & SMOKE INTEGRATION 
+   ========================================= */
+
+#censer-anchor {
+    position: absolute;
+    bottom: -10px;  /* Resting neatly on the bottom edge */
+    left: -20px;    /* Tucked behind the left wall */
+    z-index: 35;    /* Above background, below Devil */
+    pointer-events: none; 
+    transform: scale(0.65); 
+    transform-origin: bottom left;
+}
+
+#stage-box {
+    width: 1000px; 
+    height: 810px;
+    overflow: hidden;
+    position: relative;
+    background: transparent !important; 
+    border: none !important;            
+    box-shadow: none !important;        
+}
+
+#scene {
+    position: absolute;
+    width: 686px;
+    height: 708px;
+    left: -40px; 
+    top: 20px;
+}
+
+#arm-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 686px;
+    height: 708px;
+    transform-origin: 10% 40%; 
+    animation: armSwing 3.5s ease-in-out infinite alternate;
+}
+
+#censer-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 686px;
+    height: 708px;
+    transform-origin: 83.1% 9.9%; 
+    animation: censerSwing 3.0s ease-in-out infinite alternate;
+    animation-delay: -0.4s;
+}
+
+#scene img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+}
+
+@keyframes armSwing {
+    from { transform: rotate(-5deg); }
+    to { transform: rotate(10deg); }
+}
+
+@keyframes censerSwing {
+    from { transform: rotate(-35deg); }
+    to { transform: rotate(45deg); }
+}
+
+/* THE SMOKE LAYER */
+#smoke-layer {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 40; 
+    pointer-events: none;
+}
+
+.smoke {
+    position: absolute;
+    /* Moody, dim smoke to match the Vox Pecatis stone */
+    background: rgba(180, 180, 180, 0.3);
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    filter: blur(8px);
+    pointer-events: none;
+    animation: rise 3s forwards ease-out;
+    will-change: transform, opacity; 
+}
+
+@keyframes rise {
+    0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 0; }
+    15% { opacity: 0.8; }
+    100% { transform: translateY(-250px) scale(6) rotate(180deg); opacity: 0; }
 }
