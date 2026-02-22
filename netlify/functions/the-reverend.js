@@ -1,6 +1,9 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const textToSpeech = require('@google-cloud/text-to-speech');
 
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const textToSpeech = require('@google-cloud/text-to-speech');
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Define this ONLY ONCE
@@ -15,15 +18,14 @@ const ttsClient = new textToSpeech.TextToSpeechClient({
         project_id: process.env.GOOGLE_PROJECT_ID,
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
         private_key: cleanKey(process.env.GOOGLE_PRIVATE_KEY),
+        
     }
+
+    
 });
 
-const cleanKey = (key) => {
-    if (!key) return "";
-    // This fixes the common issue where Netlify turns actual newlines 
-    // into the literal characters "\n"
-    return key.replace(/\\n/g, '\n');
-};
+console.log("Auth Check - Email present:", !!process.env.GOOGLE_CLIENT_EMAIL);
+console.log("Auth Check - Project ID present:", !!process.env.GOOGLE_PROJECT_ID);
 
 // --- SURVIVAL MODE: OFFLINE PRE-CANNED INSULTS ---
 // If Google blocks us, the Reverend uses these instead of crashing.
