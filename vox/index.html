@@ -43,7 +43,7 @@
 
         #confession {
             width: 90%;
-            height: 100px;
+            height: 42px;
             background: transparent; /* Default state */
             border: none;
             padding: 8px;
@@ -308,10 +308,14 @@
         surpriseGuest.classList.add("run-theatre");
 
         resultDiv.innerText = "The ritual has begun...";
+        // 1. UI Loading State
+        resultDiv.innerText = "The Reverend is contemplating your sins...";
+        resultDiv.style.opacity = "1";
         submitBtn.disabled = true;
         submitBtn.innerText = "Witnessing...";
 
         try {
+            // 2. Fetch TEXT ONLY from Netlify (Fast!)
             const response = await fetch('/.netlify/functions/the-reverend', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -342,6 +346,80 @@
                     };
                 }
             }, 6000); 
+            if (response.status === 200) {
+                resultDiv.innerText = data.absolution;
+                
+                // 3. Show the Bishop
+                bishopContainer.style.display = "block";
+
+                // 4. Browser Speech Logic
+                const synth = window.speechSynthesis;
+                
+                // Cancel any previous speech to avoid overlap
+                if (synth.speaking) synth.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(data.absolution);
+
+                // --- VOICE SELECTION (The "British Hunt") ---
+                let voices = synth.getVoices();
+                
+                // Function to pick the best "Reverend" voice
+                function setVoice() {
+                    // Try to find "Google UK English Male" or similar specific ones first
+                    let selectedVoice = voices.find(v => v.name.includes("Google UK English Male")) || 
+                                      voices.find(v => v.name.includes("Daniel")); // Good Mac voice
+
+                    // If not found, look for any 'en-GB' (British) voice
+                    if (!selectedVoice) {
+                        selectedVoice = voices.find(v => v.lang === 'en-GB' || v.lang === 'en_GB');
+                    }
+
+                    // Fallback: any voice (better than silence)
+                    if (selectedVoice) utterance.voice = selectedVoice;
+                }
+
+                // Chrome loads voices asynchronously, so we might need to wait
+                if (voices.length === 0) {
+                    synth.onvoiceschanged = () => {
+                        voices = synth.getVoices();
+                        setVoice();
+                    };
+                } else {
+                    setVoice();
+                }
+
+                // Tweak pitch/rate for "Vicar" vibes
+                utterance.pitch = 0.8; // Slightly deeper
+                utterance.rate = 0.9;  // Slightly slower, more stern
+
+                // --- THE ANIMATION (Word Boundary Method) ---
+                // The jaw opens when a word starts, closes shortly after.
+                utterance.onboundary = (event) => {
+                    if (event.name === 'word') {
+                        // Snap open
+                        bishopJaw.style.transform = "translateY(8px)";
+                        
+                        // Snap shut after 150ms (simulates syllabic speech)
+                        setTimeout(() => {
+                            bishopJaw.style.transform = "translateY(0px)";
+                        }, 150);
+                    }
+                };
+
+                // Cleanup when finished
+                utterance.onend = () => {
+                    bishopJaw.style.transform = "translateY(0px)";
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Seek Absolution";
+                };
+
+                // SPEAK!
+                synth.speak(utterance);
+
+            } else {
+                throw new Error(data.absolution || "The Reverend remains silent.");
+            }
+
         } catch (error) {
             console.error("Error:", error);
             resultDiv.innerText = "The spirits are silent.";
